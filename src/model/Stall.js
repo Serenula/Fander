@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const StallSchema = new mongoose.Schema(
+const stallSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -9,17 +9,6 @@ const StallSchema = new mongoose.Schema(
     address: {
       type: String,
       required: true,
-    },
-    location: {
-      type: {
-        type: String,
-        enum: ["Point"],
-        required: true,
-      },
-      coordinates: {
-        type: [Number],
-        required: true,
-      },
     },
     dishes: [
       {
@@ -32,7 +21,7 @@ const StallSchema = new mongoose.Schema(
     },
     reviews: [
       {
-        users: { types: mongoose.Schema.Types.ObjectId, ref: "User" },
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Changed 'types' to 'type'
         rating: { type: Number, required: true },
         comment: { type: String },
       },
@@ -41,4 +30,7 @@ const StallSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Stall", StallSchema);
+// Define geospatial index for location field
+stallSchema.index({ location: "2dsphere" });
+
+module.exports = mongoose.model("Stall", stallSchema);

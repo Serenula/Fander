@@ -1,10 +1,14 @@
 const jwt = require("jsonwebtoken");
 
-module.exports = (req, res, next) => {
-  const token = req.header("x-auth-token");
+const auth = (req, res, next) => {
+  if (!("authorization" in req.headers)) {
+    return res.status(400).json({ status: "error", message: "No token found" });
+  }
+
+  const token = req.headers["authorization"].replace("Bearer", "").trim();
 
   if (!token) {
-    return res.status(401).json({ message: "No tokemn, authorization denied" });
+    return res.status(403).json({ status: "error", message: "Missing token" });
   }
 
   try {
@@ -12,6 +16,9 @@ module.exports = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (error) {
-    res.status(401).json({ message: "Token is not valid" });
+    console.error("Token verification failed:", error);
+    return res.status(401).json({ message: "Token is not valid" });
   }
 };
+
+module.exports = auth;

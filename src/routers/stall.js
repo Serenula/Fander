@@ -1,4 +1,5 @@
 const express = require("express");
+const router = express.Router();
 const {
   createStall,
   getAllStalls,
@@ -6,8 +7,6 @@ const {
   deleteStall,
 } = require("../controllers/stall");
 const auth = require("../middleware/auth");
-
-const router = express.Router;
 
 router.post("/", auth, createStall);
 router.get("/", getAllStalls);

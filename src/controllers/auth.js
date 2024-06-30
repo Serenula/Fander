@@ -8,7 +8,7 @@ const register = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (user) {
-      return res.stauts(400).json({ message: "User already exist" });
+      return res.status(400).json({ message: "User already exist" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -28,12 +28,12 @@ const login = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.stauts(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      res.stauts(400).json({ message: "Invalid credentials" });
+      res.status(400).json({ message: "Invalid credentials" });
     }
 
     const payload = { userId: user.id, role: user.role };
