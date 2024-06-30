@@ -1,16 +1,105 @@
-# Node rules:
-## Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
-.grunt
-
-## Dependency directory
-## Commenting this out is preferred by some people, see
-## https://docs.npmjs.com/misc/faq#should-i-check-my-node_modules-folder-into-git
+# Node.js
 node_modules
+npm-debug.log
+yarn-error.log
+lerna-debug.log
 
-# Book build output
-_book
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# eBook build output
-*.epub
-*.mobi
-*.pdf
+# Dependency directories
+node_modules/
+
+# Production
+build/
+dist/
+.out/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# dotenv environment variable files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Miscellaneous
+.DS_Store
+Thumbs.db
+
+# IDE/Editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# React Native
+.expo/
+web-build/
+.expo-shared/assets.json
+
+# MongoDB
+*.lock
+
+# Local development files
+.vagrant/
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Test directories
+tests/
+test/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Husky
+.husky/_
+
+# Next.js
+.next/
+
+# Nuxt.js
+.nuxt/
+
+# SvelteKit
+.svelte-kit/
+
+# Expo
+.expo/
+
+# Gatsby files
+.cache/
+public/
+
+# Miscellaneous
+.idea/
+.vscode/
+.vscode/**
+dist/
+dist-ssr/
+out/
+*.local
+*.env
+*.log
+*.tsbuildinfo
+build/
+logs/
