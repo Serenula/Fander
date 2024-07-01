@@ -13,7 +13,7 @@ const Register = () => {
     try {
       const response = await api.post("/auth/register", { email, password });
       localStorage.setItem("token", response.data.token);
-      navigate.push("/stalls"); // Redirect to stalls list after registration
+      navigate("/stalls"); // Redirect to stalls list after registration
     } catch (error) {
       setError("Failed to register."); // Handle specific errors as needed
     }
