@@ -1,8 +1,8 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const User = require("../model/User");
+const User = require("../models/User");
 
-const register = async (req, res) => {
+const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
@@ -12,10 +12,40 @@ const register = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ name, email, password: hashedPassword });
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword,
+      role: role || user,
+    });
 
     await newUser.save();
     res.status(201).json({ message: "User registered successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+const registerVendor = async (req, res) => {
+  const { name, email, password } = req.body;
+
+  try {
+    const vendor = await User.findOne({ email });
+    if (vendor) {
+      return res.status(400).json({ message: "Vendor already exist" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newVendor = new User({
+      name,
+      email,
+      password: hashedPassword,
+      role: role || vendor,
+    });
+
+    await newVendor.save();
+    res.status(201).json({ message: "Vendor registered successfully" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
@@ -47,4 +77,4 @@ const login = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-module.exports = { register, login };
+module.exports = { registerVendor, registerUser, login };

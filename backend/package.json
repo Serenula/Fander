@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "create-super-admin": "node scripts/createSuperAdmin.js",
     "start": "node server",
     "dev": "nodemon server"
   },
@@ -22,6 +23,7 @@
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.4.4",
+    "scripts": "^0.1.0",
     "uuid": "^10.0.0"
   },
   "devDependencies": {

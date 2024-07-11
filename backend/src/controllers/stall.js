@@ -1,4 +1,4 @@
-const Stall = require("../model/Stall");
+const Stall = require("../models/Stall");
 const { getGeocode } = require("../utilities/googleMaps");
 
 const createStall = async (req, res) => {

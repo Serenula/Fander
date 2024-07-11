@@ -7,10 +7,11 @@ const {
   deleteStall,
 } = require("../controllers/stall");
 const auth = require("../middleware/auth");
+const adminAuth = require("../middleware/adminAuth");
 
-router.post("/", auth, createStall);
-router.get("/", getAllStalls);
-router.put("/:id", auth, updateStall);
-router.delete("/:id", auth, deleteStall);
+router.post("/", auth, adminAuth, createStall);
+router.get("/", auth, getAllStalls);
+router.put("/:id", auth, adminAuth, updateStall);
+router.delete("/:id", auth, adminAuth, deleteStall);
 
 module.exports = router;
