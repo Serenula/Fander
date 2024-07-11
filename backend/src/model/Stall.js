@@ -21,7 +21,7 @@ const stallSchema = new mongoose.Schema(
     },
     reviews: [
       {
-        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Changed 'types' to 'type'
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         rating: { type: Number, required: true },
         comment: { type: String },
       },

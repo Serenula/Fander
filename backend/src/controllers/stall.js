@@ -1,10 +1,19 @@
 const Stall = require("../model/Stall");
+const { getGeocode } = require("../utilities/googleMaps");
 
 const createStall = async (req, res) => {
   const { name, address, location, dishes, cost } = req.body;
 
   try {
-    const newStall = new Stall({ name, address, location, dishes, cost });
+    const geoLocation = await getGeocode(address);
+
+    const newStall = new Stall({
+      name,
+      address,
+      location: geoLocation,
+      dishes,
+      cost,
+    });
     await newStall.save();
     res.status(201).json(newStall);
   } catch (error) {
