@@ -4,9 +4,10 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
-const authRouter = require("./src/routes/auth");
-const stallRouter = require("./src/routes/stall");
-const adminRouter = require("./src/routes/admin");
+const authRouter = require("./src/routers/auth");
+const userRouter = require("./src/routers/user");
+const stallRouter = require("./src/routers/stall");
+const adminRouter = require("./src/routers/admin");
 const reviewRouter = require("./src/routers/review");
 const suggestionRouter = require("./src/routers/suggestion");
 const errorHandler = require("./src/middleware/errorHandler");
@@ -23,7 +24,11 @@ connectDB();
 const app = express();
 
 //Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+  })
+);
 app.use(helmet());
 app.use(limiter);
 app.use(express.json());
@@ -33,7 +38,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/api/auth", authRouter);
 app.use("/api/stalls", stallRouter);
 app.use("/api/admins", adminRouter);
-app.use("api/user");
+app.use("/api/user", userRouter);
 app.use("/api/reviews", reviewRouter);
 app.use("/api/suggestions", suggestionRouter);
 

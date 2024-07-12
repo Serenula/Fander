@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register</title>
     <link rel="stylesheets" href="../../css/styles.css" />
-    <script src="../../node_modules/htmx/htmx.js"></script>
+    <script src="../../node_modules/htmx.org/dist/htmx.js"></script>
   </head>
   <body>
     <h1>Registration</h1>
-    <form id="registration-form" hx-post="/api/auth/register">
+    <form id="registration-form" hx-post="/api/auth/User-register">
       <label for="name">Name:</label>
       <input type="text" id="name" name="name" required /><br /><br />
 

@@ -16,7 +16,7 @@ const registerUser = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      role: role || user,
+      role: "user",
     });
 
     await newUser.save();
@@ -41,7 +41,7 @@ const registerVendor = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      role: role || vendor,
+      role: "stall",
     });
 
     await newVendor.save();
