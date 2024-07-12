@@ -6,7 +6,9 @@ const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const authRouter = require("./src/routes/auth");
 const stallRouter = require("./src/routes/stall");
-const adminRouter = require("./src/routes/admin"); // Include admin routes
+const adminRouter = require("./src/routes/admin");
+const reviewRouter = require("./src/routers/review");
+const suggestionRouter = require("./src/routers/suggestion");
 const errorHandler = require("./src/middleware/errorHandler");
 const connectDB = require("./src/db/db");
 const limiter = rateLimit({
@@ -32,12 +34,15 @@ app.use("/api/auth", authRouter);
 app.use("/api/stalls", stallRouter);
 app.use("/api/admins", adminRouter);
 app.use("api/user");
+app.use("/api/reviews", reviewRouter);
+app.use("/api/suggestions", suggestionRouter);
 
 //Error Handling
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send({ message: "Server Error!" });
-});
+app.use(errorHandler);
+// app.use((err, req, res, next) => {
+//   console.error(err.stack);
+//   res.status(500).send({ message: "Server Error!" });
+// });
 
 //PORT
 const PORT = process.env.PORT || 5001;

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="stylesheets" href="../../css/styles.css" />
+    <script src="../../node_modules/htmx/htmx.js"></script>
+  </head>
+  <body>
+    <h1>Login</h1>
+    <form id="login-form" hx-post="/api/auth/login">
+      <label for="email">Email:</label>
+      <input for="email" id="email" name="email" required /><br /><br />
+
+      <label for="password">Password:</label>
+      <div class="password-field">
+        <input type="password" id="password" name="password" required />
+        <input
+          type="checkbox"
+          id="show-password"
+          onchange="togglePasswordVisibility()"
+        />
+        <label for="show-password">show-password</label>
+      </div>
+      <br /><br />
+
+      <button type="submit" hx-target="#login-results">Login</button>
+    </form>
+
+    <div id="login-results"></div>
+
+    <a href="register.html">Don't have an account? Register now!</a>
+
+    <script src="../../js/main.js"></script>
+    <script>
+      function togglePasswordVisibility() {
+        const passwordField = document.getElementById("password");
+        const checkbox = document.getElementById("show-password");
+
+        if (checkbox.checked) {
+          passwordField.type = "text";
+        } else {
+          passwordField.type = "password";
+        }
+      }
+    </script>
+  </body>
+</html>
