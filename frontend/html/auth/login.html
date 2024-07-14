@@ -3,15 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
-    <link rel="stylesheets" href="../../css/styles.css" />
-    <script src="../../node_modules/htmx.org/dist/htmx.js"></script>
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="../../css/styles.css" />
+    <script src="../../node_modules/htmx.org/dist/htmx.min.js"></script>
   </head>
   <body>
-    <h1>Login</h1>
-    <form id="login-form" hx-post="/api/auth/login">
+    <h1>Admin Login</h1>
+    <form
+      id="admin-login-form"
+      hx-post="http://127.0.0.1:5001/api/auth/login"
+      hx-target="#login-results"
+      hx-swap="innerHTML"
+      hx-on="htmx:afterRequest"
+      hx-trigger="submit from:body"
+    >
       <label for="email">Email:</label>
-      <input for="email" id="email" name="email" required /><br /><br />
+      <input type="email" id="email" name="email" required /><br /><br />
 
       <label for="password">Password:</label>
       <div class="password-field">
@@ -21,11 +28,11 @@
           id="show-password"
           onchange="togglePasswordVisibility()"
         />
-        <label for="show-password">show-password</label>
+        <label for="show-password">Show password</label>
       </div>
       <br /><br />
 
-      <button type="submit" hx-target="#login-results">Login</button>
+      <button type="submit">Login</button>
     </form>
 
     <div id="login-results"></div>
@@ -44,6 +51,19 @@
           passwordField.type = "password";
         }
       }
+
+      document.body.addEventListener("htmx:afterRequest", function (evt) {
+        if (evt.detail.successful) {
+          const response = evt.detail.xhr.response;
+          const data = JSON.parse(response);
+          if (data.message) {
+            document.getElementById("login-results").innerHTML = data.message;
+          }
+          if (data.user && data.user.role === "admin") {
+            window.location.href = "/admin/dashboard.html";
+          }
+        }
+      });
     </script>
   </body>
 </html>

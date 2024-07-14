@@ -16,7 +16,7 @@ const registerUser = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      role: "user",
+      role: role || "user",
     });
 
     await newUser.save();
@@ -67,11 +67,14 @@ const login = async (req, res) => {
     }
 
     const payload = { userId: user.id, role: user.role };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+    const token = jwt.sign(payload, process.env.ACCESS_SECRET, {
       expiresIn: "1h",
     });
 
-    res.json({ token });
+    res.setHeader("Authorization", `Bearer ${token}`);
+    res.status(200).json({
+      message: "Login successful!",
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });

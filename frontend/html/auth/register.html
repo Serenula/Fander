@@ -4,12 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register</title>
-    <link rel="stylesheets" href="../../css/styles.css" />
-    <script src="../../node_modules/htmx.org/dist/htmx.js"></script>
+    <link rel="stylesheet" href="../../css/styles.css" />
+    <script src="../../node_modules/htmx.org/dist/htmx.min.js"></script>
   </head>
   <body>
     <h1>Registration</h1>
-    <form id="registration-form" hx-post="/api/auth/User-register">
+    <form
+      id="registration-form"
+      hx-post="http://127.0.0.1:5001/api/auth/userregister"
+      hx-target="#registration-result"
+    >
       <label for="name">Name:</label>
       <input type="text" id="name" name="name" required /><br /><br />
 
@@ -24,11 +28,11 @@
           id="show-password"
           onchange="togglePasswordVisibility()"
         />
-        <label for="show-password">show-password</label>
+        <label for="show-password">Show password</label>
       </div>
       <br /><br />
 
-      <button type="submit" hx-target="#registration-results">Register</button>
+      <button type="submit">Register</button>
     </form>
 
     <div id="registration-result"></div>
