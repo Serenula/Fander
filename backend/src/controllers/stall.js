@@ -10,7 +10,10 @@ const createStall = async (req, res) => {
     const newStall = new Stall({
       name,
       address,
-      location: geoLocation,
+      location: {
+        type: "Point",
+        coordinates: [geoLocation.lng, geoLocation.lat],
+      },
       dishes,
       cost,
     });

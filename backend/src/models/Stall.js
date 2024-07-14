@@ -10,6 +10,17 @@ const stallSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    location: {
+      type: {
+        type: String, // "Point"
+        enum: ["Point"], // 'location.type' must be 'Point'
+        required: false,
+      },
+      coordinates: {
+        type: [Number],
+        required: false,
+      },
+    },
     dishes: [
       {
         type: String,

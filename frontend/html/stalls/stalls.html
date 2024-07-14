@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stalls</title>
+    <link rel="stylesheet" href="../../css/styles.css" />
+    <script src="../../node_modules/htmx.org/dist/htmx.js"></script>
+    <script src="../../js/adminCheck.js"></script>
+  </head>
+  <body>
+    <h1>Stalls</h1>
+    <!-- Search function-->
+    <div>
+      <input
+        type="text"
+        id="search"
+        placeholder="Search for stalls"
+        hx-get="http://127.0.0.1:5001/api/stalls"
+        hx-trigger="keyup changed delay:500ms"
+        hx-target="#stall-list"
+        hx-include="#search"
+      />
+    </div>
+    <!-- Stall list display-->
+    <div
+      id="stall-list"
+      hx-get="http://127.0.0.1:5001/api/stall"
+      hx-trigger="load"
+      hx-target="#stall-list"
+    >
+      <!-- Stall items to load here dynamically-->
+    </div>
+
+    <!-- Create stall form for superadmin-->
+    <div id="create-stall" style="display: none">
+      <h2>Create Stall</h2>
+      <form
+        id="create-stall-form"
+        hx-post="http://127.0.0.1:5001/api/stalls"
+        hx-target="#stall-list"
+        hx-swap="beforeend"
+      >
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required /><br /><br />
+
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address" required /><br /><br />
+
+        <label for="dishes">Dishes (comma separated):</label>
+        <input type="text" id="dishes" name="dishes" /><br /><br />
+
+        <label for="cost">Cost:</label>
+        <input type="number" id="cost" name="cost" required /><br /><br />
+
+        <button type="submit">Create Stall</button>
+      </form>
+    </div>
+    <script src="../../js/main.js"></script>
+    <!-- Admin checker-->
+    <script>
+      if (checkAdmin()) {
+        document.getElementById("create-stall").style.display = "block";
+      }
+    </script>
+  </body>
+</html>
