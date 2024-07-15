@@ -21,14 +21,21 @@ const stallSchema = new mongoose.Schema(
         required: false,
       },
     },
-    dishes: [
-      {
-        type: String,
-      },
-    ],
-    cost: {
+    meat: {
       type: Number,
       required: true,
+    },
+    vegetable: {
+      type: Number,
+      required: true,
+    },
+    fish: {
+      type: Number,
+      required: true,
+    },
+    misc: {
+      type: Number,
+      required: false,
     },
     reviews: [
       {

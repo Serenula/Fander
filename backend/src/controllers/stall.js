@@ -14,8 +14,10 @@ const createStall = async (req, res) => {
         type: "Point",
         coordinates: [geoLocation.lng, geoLocation.lat],
       },
-      dishes,
-      cost,
+      meat,
+      vegetable,
+      fish,
+      misc,
     });
     await newStall.save();
     res.status(201).json(newStall);
