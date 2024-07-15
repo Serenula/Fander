@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { v4: uuidv4 } = require("uuid");
 const User = require("../models/User");
 
 const registerUser = async (req, res) => {
@@ -8,7 +9,7 @@ const registerUser = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (user) {
-      return res.status(400).json({ message: "User already exist" });
+      return res.status(400).json({ message: "User already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -16,7 +17,7 @@ const registerUser = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      role: role || "user",
+      role: "user",
     });
 
     await newUser.save();
@@ -33,7 +34,7 @@ const registerVendor = async (req, res) => {
   try {
     const vendor = await User.findOne({ email });
     if (vendor) {
-      return res.status(400).json({ message: "Vendor already exist" });
+      return res.status(400).json({ message: "Vendor already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -63,27 +64,48 @@ const login = async (req, res) => {
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
     const payload = { userId: user.id, role: user.role };
-    const token = jwt.sign(payload, process.env.ACCESS_SECRET, {
+    const accessToken = jwt.sign(payload, process.env.ACCESS_SECRET, {
       expiresIn: "1h",
     });
 
-    const refresh = jwt.sign(claims, process.env.REFRESH_SECRET, {
+    const refreshToken = jwt.sign(payload, process.env.REFRESH_SECRET, {
       expiresIn: "30d",
       jwtid: uuidv4(),
     });
 
-    res.json({ access, refresh });
+    res.cookie("accessToken", accessToken, { httpOnly: true, secure: true });
+    res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true });
+
+    res.json({
+      message: "Login successful",
+      user: { id: user.id, role: user.role },
+    });
   } catch (error) {
     console.error(error.message);
-    res.status(400).json({ status: "error", message: "login failed" });
+    res.status(500).json({ status: "error", message: "Login failed" });
   }
 };
 
-// const refresh = async (req, res) => {
-//   try {
-//     const decoded = jwt.verify(req.body.refresh, process.env.REFRESH_SECRET)
-module.exports = { registerVendor, registerUser, login };
+const refresh = async (req, res) => {
+  const { refreshToken } = req.body;
+
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET);
+
+    const payload = { userId: decoded.userId, role: decoded.role };
+    const newAccessToken = jwt.sign(payload, process.env.ACCESS_SECRET, {
+      expiresIn: "1h",
+    });
+
+    res.json({ accessToken: newAccessToken });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ status: "error", message: "Token refresh failed" });
+  }
+};
+
+module.exports = { registerVendor, registerUser, login, refresh };

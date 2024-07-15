@@ -1,11 +1,13 @@
 const jwt = require("jsonwebtoken");
 
 const auth = (req, res, next) => {
-  if (!("authorization" in req.headers)) {
+  const authorizationHeader = req.headers["authorization"];
+
+  if (!authorizationHeader) {
     return res.status(400).json({ status: "error", message: "No token found" });
   }
 
-  const token = req.headers["authorization"].replace("Bearer", "").trim();
+  const token = authorizationHeader.replace("Bearer", "").trim();
 
   if (!token) {
     return res.status(403).json({ status: "error", message: "Missing token" });
