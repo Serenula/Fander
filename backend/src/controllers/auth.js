@@ -71,13 +71,19 @@ const login = async (req, res) => {
       expiresIn: "1h",
     });
 
-    res.setHeader("Authorization", `Bearer ${token}`);
-    res.status(200).json({
-      message: "Login successful!",
+    const refresh = jwt.sign(claims, process.env.REFRESH_SECRET, {
+      expiresIn: "30d",
+      jwtid: uuidv4(),
     });
+
+    res.json({ access, refresh });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
+    console.error(error.message);
+    res.status(400).json({ status: "error", message: "login failed" });
   }
 };
+
+// const refresh = async (req, res) => {
+//   try {
+//     const decoded = jwt.verify(req.body.refresh, process.env.REFRESH_SECRET)
 module.exports = { registerVendor, registerUser, login };
