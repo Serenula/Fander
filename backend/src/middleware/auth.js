@@ -18,8 +18,33 @@ const auth = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (error) {
-    console.error("Token verification failed:", error);
-    return res.status(401).json({ message: "Token is not valid" });
+    const refreshToken = req.headers["x-refresh-token"];
+
+    if (!refreshToken) {
+      return res
+        .status(401)
+        .json({ msg: "Token is not valid and no refresh token provided" });
+    }
+
+    try {
+      const decodedRefresh = jwt.verify(
+        refreshToken,
+        process.env.REFRESH_SECRET
+      );
+
+      const newAccessToken = jwt.sign(
+        { userId: decodedRefresh.userId, role: decodedRefresh.role },
+        process.env.ACCESS_SECRET,
+        { expiresIn: "1h" }
+      );
+
+      res.setHeader("Authorization", `Bearer ${newAccessToken}`);
+      req.user = decodedRefresh;
+      next();
+    } catch (refreshError) {
+      console.error("Refresh token failed to validate:", refreshError);
+      return res.stauts(401).json({ msg: "Refresh token is not valid" });
+    }
   }
 };
 

@@ -63,8 +63,18 @@
             data.user &&
             (data.user.role === "admin" || data.user.role === "superAdmin")
           ) {
-            // Store user data in local storage or session storage
-            localStorage.setItem("user", JSON.stringify(data.user));
+            // Store user data and tokens in local storage
+            localStorage.setItem(
+              "user",
+              JSON.stringify({
+                id: data.user.id,
+                name: data.user.name,
+                email: data.user.email,
+                role: data.user.role,
+                accessToken: data.accessToken,
+                refreshToken: data.refreshToken,
+              })
+            );
             window.location.href = "/html/stalls/stalls.html";
           }
         }

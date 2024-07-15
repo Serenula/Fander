@@ -16,7 +16,7 @@
         type="text"
         id="search"
         placeholder="Search for stalls"
-        hx-get="http://127.0.0.1:5001/api/stalls"
+        hx-get="http://127.0.0.1:5001/api/stalls/"
         hx-trigger="keyup changed delay:500ms"
         hx-target="#stall-list"
         hx-include="#search"
@@ -25,7 +25,7 @@
     <!-- Stall list display-->
     <div
       id="stall-list"
-      hx-get="http://127.0.0.1:5001/api/stalls"
+      hx-get="http://127.0.0.1:5001/api/stalls/"
       hx-trigger="load"
       hx-target="#stall-list"
     >
@@ -73,6 +73,14 @@
       if (checkAdmin()) {
         document.getElementById("create-stall").style.display = "block";
       }
+
+      document.body.addEventListener("htmx:configRequest", (event) => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (user && user.accessToken) {
+          event.detail.headers["Authorization"] = `Bearer ${user.accessToken}`;
+          event.detail.headers["x-refresh-token"] = user.refreshToken;
+        }
+      });
     </script>
   </body>
 </html>

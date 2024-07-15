@@ -42,6 +42,7 @@ app.use(
       "hx-sync",
       "hx-boosted",
       "hx-current-url",
+      "x-refresh-token",
     ],
     credentials: true,
   })

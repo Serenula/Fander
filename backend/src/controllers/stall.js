@@ -1,19 +1,19 @@
 const Stall = require("../models/Stall");
-const { getGeocode } = require("../utilities/googleMaps");
+// const { getGeocode } = require("../utilities/googleMaps");
 
 const createStall = async (req, res) => {
-  const { name, address, location, dishes, cost } = req.body;
+  const { name, address, meat, vegetable, fish, misc } = req.body;
 
   try {
-    const geoLocation = await getGeocode(address);
+    // const geoLocation = await getGeocode(address);
 
     const newStall = new Stall({
       name,
       address,
-      location: {
-        type: "Point",
-        coordinates: [geoLocation.lng, geoLocation.lat],
-      },
+      // location: {
+      //   type: "Point",
+      //   coordinates: [geoLocation.lng, geoLocation.lat],
+      // },
       meat,
       vegetable,
       fish,
