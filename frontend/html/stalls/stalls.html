@@ -16,7 +16,7 @@
         type="text"
         id="search"
         placeholder="Search for stalls"
-        hx-get="/api/stalls"
+        hx-get="http://127.0.0.1:5001/api/stalls"
         hx-trigger="keyup changed delay:500ms"
         hx-target="#stall-list"
         hx-include="#search"
@@ -25,7 +25,7 @@
     <!-- Stall list display-->
     <div
       id="stall-list"
-      hx-get="/api/stall"
+      hx-get="http://127.0.0.1:5001/api/stalls"
       hx-trigger="load"
       hx-target="#stall-list"
     >
@@ -37,7 +37,7 @@
       <h2>Create Stall</h2>
       <form
         id="create-stall-form"
-        hx-post="/api/stalls"
+        hx-post="http://127.0.0.1:5001/api/stalls/create"
         hx-target="#stall-list"
         hx-swap="beforeend"
       >

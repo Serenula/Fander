@@ -10,7 +10,7 @@ const auth = require("../middleware/auth");
 const adminAuth = require("../middleware/adminAuth");
 
 router.get("/", auth, getAllStalls);
-router.post("/", auth, adminAuth, createStall);
+router.post("/create", auth, adminAuth, createStall);
 router.put("/:id", auth, adminAuth, updateStall);
 router.delete("/:id", auth, adminAuth, deleteStall);
 
