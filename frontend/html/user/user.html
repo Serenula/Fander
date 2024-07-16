@@ -35,6 +35,14 @@
       </form>
     </div>
     <script>
+      document.body.addEventListener("htmx:configRequest", (event) => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (user && user.accessToken) {
+          event.detail.headers["Authorization"] = `Bearer ${user.accessToken}`;
+          event.detail.headers["x-refresh-token"] = user.refreshToken;
+        }
+      });
+
       function toggleEditProfile() {
         const editProfile = document.getElementById("edit-profile");
         editProfile.style.display =
