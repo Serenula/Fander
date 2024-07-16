@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Stalls</title>
     <link rel="stylesheet" href="../../css/styles.css" />
+    <script src="../../js/config.js"></script>
     <script src="../../node_modules/htmx.org/dist/htmx.js"></script>
     <script src="../../js/adminCheck.js"></script>
   </head>
@@ -16,7 +17,7 @@
         type="text"
         id="search"
         placeholder="Search for stalls"
-        hx-get="http://127.0.0.1:5001/api/stalls/"
+        hx-get="/stalls/"
         hx-trigger="keyup changed delay:500ms"
         hx-target="#stall-list"
         hx-include="#search"
@@ -25,7 +26,7 @@
     <!-- Stall list display-->
     <div
       id="stall-list"
-      hx-get="http://127.0.0.1:5001/api/stalls/"
+      hx-get="/stalls/"
       hx-trigger="load"
       hx-target="#stall-list"
     >
@@ -37,7 +38,7 @@
       <h2>Create Stall</h2>
       <form
         id="create-stall-form"
-        hx-post="http://127.0.0.1:5001/api/stalls/create"
+        hx-post="/stalls/create"
         hx-target="#stall-list"
         hx-swap="beforeend"
       >
