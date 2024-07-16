@@ -10,7 +10,7 @@ const {
 const auth = require("../middleware/auth");
 
 router.get("/profile", auth, getUserProfile);
-router.put("/profile", auth, updateUserProfile);
+router.put("/edit", auth, updateUserProfile);
 router.put("/change-password", auth, changePassword);
 router.put("/deactivate", auth, deactivateUserAccount);
 router.put("/reactivate", auth, reactivateUserAccount);

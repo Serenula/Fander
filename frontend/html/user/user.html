@@ -19,18 +19,18 @@
     >
       <!-- profile should be loaded here-->
     </div>
-    <div id="edit-profile" style="display: none">
+    <div id="edit-profile" style="display: block">
       <h2>Edit Profile</h2>
       <form
         id="edit-profile-form"
-        hx-put="/user/profile"
+        hx-put="/user/edit"
         hx-target="#user-profile"
         hx-swap="outerHTML"
       >
         <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required /><br /><br />
+        <input type="text" id="name" name="name" /><br /><br />
         <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required /><br /><br />
+        <input type="email" id="email" name="email" /><br /><br />
         <button type="submit">Update Profile</button>
       </form>
     </div>
@@ -45,8 +45,7 @@
 
       function toggleEditProfile() {
         const editProfile = document.getElementById("edit-profile");
-        editProfile.style.display =
-          editProfile.style.display === "none" ? "block" : "none";
+        editProfile.style.display === "none" ? "block" : "none";
       }
     </script>
   </body>
