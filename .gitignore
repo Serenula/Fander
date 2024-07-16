@@ -103,3 +103,4 @@ out/
 *.tsbuildinfo
 build/
 logs/
+scripts/
