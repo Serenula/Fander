@@ -4,7 +4,10 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
-
+const authRouter = require("./src/routes/auth");
+const stallRouter = require("./src/routes/stall");
+const adminRouter = require("./src/routes/admin"); // Include admin routes
+const errorHandler = require("./src/middleware/errorHandler");
 const connectDB = require("./src/db/db");
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -25,8 +28,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 //Routes
-app.use("/api/auth", require("./src/routers/auth"));
-app.use("/api/stalls", require("./src/routers/stall"));
+app.use("/api/auth", authRouter);
+app.use("/api/stalls", stallRouter);
+app.use("/api/admins", adminRouter);
+app.use("api/user");
 
 //Error Handling
 app.use((err, req, res, next) => {
