@@ -29,14 +29,21 @@ const updateUserProfile = async (req, res) => {
 };
 
 const changePassword = async (req, res) => {
-  const { oldPassword, newPassword } = req.body;
+  const { currentPassword, newPassword, confirmPassword } = req.body;
 
   try {
     const user = await User.findById(req.user.userId);
-    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
 
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid current password" });
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ msg: "Passwords do not match" });
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);

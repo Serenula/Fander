@@ -19,7 +19,10 @@
     >
       <!-- profile should be loaded here-->
     </div>
-    <div id="edit-profile" style="display: block">
+    <button onclick="toggleEditProfile()">Edit Profile</button>
+    <button onclick="toggleChangePassword()">Change Password</button>
+
+    <div id="edit-profile" style="display: none">
       <h2>Edit Profile</h2>
       <form
         id="edit-profile-form"
@@ -34,6 +37,36 @@
         <button type="submit">Update Profile</button>
       </form>
     </div>
+
+    <div id="change-password" style="display: none">
+      <h2>Change Password</h2>
+      <form
+        id="change-password-form"
+        hx-put="/user/change-password"
+        hx-target="#user-profile"
+        hx-swap="outerHTML"
+      >
+        <label for="current-password">Current Password:</label>
+        <input
+          type="password"
+          id="current-password"
+          name="current-password"
+        /><br /><br />
+        <label for="new-password">New Password:</label>
+        <input
+          type="password"
+          id="new-password"
+          name="new-password"
+        /><br /><br />
+        <label for="confirm-password">Confirm Password:</label>
+        <input
+          type="password"
+          id="confirm-password"
+          name="confirm-password"
+        /><br /><br />
+        <button type="submit">Change Password</button>
+      </form>
+    </div>
     <script>
       document.body.addEventListener("htmx:configRequest", (event) => {
         const user = JSON.parse(localStorage.getItem("user"));
@@ -45,7 +78,25 @@
 
       function toggleEditProfile() {
         const editProfile = document.getElementById("edit-profile");
-        editProfile.style.display === "none" ? "block" : "none";
+        editProfile.style.display =
+          editProfile.style.display === "none" ? "block" : "none";
+      }
+
+      function togglePasswordVisibility() {
+        const passwordField = document.getElementById("password");
+        const checkbox = document.getElementById("show-password");
+
+        if (checkbox.checked) {
+          passwordField.type = "text";
+        } else {
+          passwordField.type = "password";
+        }
+      }
+
+      function toggleChangePassword() {
+        const changePassword = document.getElementById("change-password");
+        changePassword.style.display =
+          changePassword.style.display === "none" ? "block" : "none";
       }
     </script>
   </body>

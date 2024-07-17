@@ -49,6 +49,6 @@ const stallSchema = new mongoose.Schema(
 );
 
 // Define geospatial index for location field
-stallSchema.index({ location: "2dsphere" });
+// stallSchema.index({ location: "2dsphere" });
 
 module.exports = mongoose.model("Stall", stallSchema);

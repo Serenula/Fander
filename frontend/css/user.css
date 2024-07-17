@@ -12,7 +12,8 @@ h2 {
 }
 
 #user-profile,
-#edit-profile {
+#edit-profile,
+#change-password {
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -64,4 +65,10 @@ form {
 .success-message {
   color: green;
   font-size: 0.9em;
+}
+
+button {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
 }
