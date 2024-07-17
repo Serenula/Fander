@@ -8,10 +8,28 @@
     <script src="../../js/config.js"></script>
     <script src="../../node_modules/htmx.org/dist/htmx.js"></script>
     <script src="../../js/adminCheck.js"></script>
+    <script src="../../js/googleMaps.js"></script>
+    <script>
+      // Fetch the Google Maps API key from the server
+      fetch("http://127.0.0.1:5001/api/maps/apikey")
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.apiKey) {
+            const script = document.createElement("script");
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${data.apiKey}&callback=initMap`;
+            script.async = true;
+            script.defer = true;
+            document.head.appendChild(script);
+          } else {
+            console.error("Failed to load Google Maps API Key");
+          }
+        })
+        .catch((error) => console.error("Error fetching API key:", error));
+    </script>
   </head>
   <body>
     <h1>Stalls</h1>
-    <!-- Search function-->
+    <!-- Search function -->
     <div>
       <input
         type="text"
@@ -23,17 +41,18 @@
         hx-include="#search"
       />
     </div>
-    <!-- Stall list display-->
+    <div id="map" style="height: 500px; width: 100%"></div>
+    <!-- Stall list display -->
     <div
       id="stall-list"
       hx-get="/stalls/"
       hx-trigger="load"
       hx-target="#stall-list"
     >
-      <!-- Stall items to load here dynamically-->
+      <!-- Stall items to load here dynamically -->
     </div>
 
-    <!-- Create stall form for superadmin-->
+    <!-- Create stall form for superadmin -->
     <div id="create-stall" style="display: none">
       <h2>Create Stall</h2>
       <form
@@ -41,6 +60,7 @@
         hx-post="/stalls/create"
         hx-target="#stall-list"
         hx-swap="beforeend"
+        onsubmit="handleCreateStall(event)"
       >
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" required /><br /><br />
@@ -69,7 +89,7 @@
       </form>
     </div>
     <script src="../../js/main.js"></script>
-    <!-- Admin checker-->
+    <!-- Admin checker -->
     <script>
       if (checkAdmin()) {
         document.getElementById("create-stall").style.display = "block";
@@ -103,6 +123,28 @@
             .join("");
         }
       });
+
+      function handleCreateStall(event) {
+        event.preventDefault();
+        const form = event.target;
+        const address = form.address.value;
+
+        getGeocode(address)
+          .then((geoLocation) => {
+            form.location.value = JSON.stringify({
+              type: "Point",
+              coordinates: [geoLocation.lng, geoLocation.lat],
+            });
+
+            htmx.trigger(form, "submit");
+          })
+          .catch((error) => {
+            console.error("Geocode error:", error);
+            alert(
+              "Failed to get location data. Please check the address and try again."
+            );
+          });
+      }
     </script>
   </body>
 </html>

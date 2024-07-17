@@ -6,6 +6,46 @@ h1 {
   text-align: center;
 }
 
+#map {
+  height: 500px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+#create-stall {
+  margin: 0 auto;
+  max-width: 600px;
+}
+
+label {
+  display: inline-block;
+  width: 100px;
+}
+
+input,
+button {
+  width: calc(100% - 120px);
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+button {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #218838;
+}
+
 .stall-grid {
   display: flex;
   flex-wrap: wrap;

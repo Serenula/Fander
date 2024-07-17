@@ -10,10 +10,7 @@ const createStall = async (req, res) => {
     const newStall = new Stall({
       name,
       address,
-      // location: {
-      //   type: "Point",
-      //   coordinates: [geoLocation.lng, geoLocation.lat],
-      // },
+      location,
       meat,
       vegetable,
       fish,

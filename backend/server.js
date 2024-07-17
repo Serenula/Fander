@@ -11,6 +11,7 @@ const stallRouter = require("./src/routers/stall");
 const adminRouter = require("./src/routers/admin");
 const reviewRouter = require("./src/routers/review");
 const suggestionRouter = require("./src/routers/suggestion");
+const mapsRouter = require("./src/routers/googleMaps");
 const errorHandler = require("./src/middleware/errorHandler");
 const connectDB = require("./src/db/db");
 
@@ -72,6 +73,7 @@ app.use("/api/admins", adminRouter);
 app.use("/api/user", userRouter);
 app.use("/api/reviews", reviewRouter);
 app.use("/api/suggestions", suggestionRouter);
+app.use("/api/maps", mapsRouter);
 
 // Error Handling
 app.use(errorHandler);
