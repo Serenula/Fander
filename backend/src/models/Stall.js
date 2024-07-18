@@ -10,17 +10,6 @@ const stallSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    location: {
-      type: {
-        type: String, // "Point"
-        enum: ["Point"], // 'location.type' must be 'Point'
-        required: false,
-      },
-      coordinates: {
-        type: [Number],
-        required: false,
-      },
-    },
     meat: {
       type: Number,
       required: true,
@@ -47,8 +36,5 @@ const stallSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
-// Define geospatial index for location field
-stallSchema.index({ location: "2dsphere" });
 
 module.exports = mongoose.model("Stall", stallSchema);

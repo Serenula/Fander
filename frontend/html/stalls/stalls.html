@@ -16,7 +16,7 @@
         .then((data) => {
           if (data.apiKey) {
             const script = document.createElement("script");
-            script.src = `https://maps.googleapis.com/maps/api/js?key=${data.apiKey}&callback=initMap`;
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${data.apiKey}&loading=async&callback=initMap`;
             script.async = true;
             script.defer = true;
             document.head.appendChild(script);
@@ -48,9 +48,7 @@
       hx-get="/stalls/"
       hx-trigger="load"
       hx-target="#stall-list"
-    >
-      <!-- Stall items to load here dynamically -->
-    </div>
+    ></div>
 
     <!-- Create stall form for superadmin -->
     <div id="create-stall" style="display: none">

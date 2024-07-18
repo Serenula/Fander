@@ -10,7 +10,6 @@ const createStall = async (req, res) => {
     const newStall = new Stall({
       name,
       address,
-      location,
       meat,
       vegetable,
       fish,
