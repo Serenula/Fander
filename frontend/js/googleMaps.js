@@ -26,7 +26,7 @@ function initMap() {
 
 function handleLocationError(browserHasGeolocation, pos) {
   map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: 1.3521, lng: 103.8198 },
+    center: { lat: 1.3521, lng: 103.8198 }, // Default to Singapore
     zoom: 12,
   });
   loadStalls();
@@ -42,7 +42,7 @@ function loadStalls() {
     return;
   }
 
-  console.log("Using access token:", user.accessToken);
+  console.log("Token Received Successfully");
 
   fetch(`${baseUrl}/api/stalls/`, {
     method: "GET",
@@ -68,48 +68,6 @@ function loadStalls() {
         throw new Error("Response is not an array");
       }
 
-      // Update the map with markers
-      stalls.forEach((stall) => {
-        if (stall.address) {
-          getGeocode(stall.address)
-            .then((geoLocation) => {
-              const marker = new google.maps.Marker({
-                position: {
-                  lat: geoLocation.lat,
-                  lng: geoLocation.lng,
-                },
-                map: map,
-                title: stall.name,
-              });
-
-              const infoWindow = new google.maps.InfoWindow({
-                content: `
-                  <div>
-                    <h3>${stall.name}</h3>
-                    <p><strong>Address:</strong> ${stall.address}</p>
-                    <p><strong>Meat:</strong> ${stall.meat}</p>
-                    <p><strong>Vegetable:</strong> ${stall.vegetable}</p>
-                    <p><strong>Fish:</strong> ${stall.fish}</p>
-                    <p><strong>Misc:</strong> ${stall.misc}</p>
-                  </div>
-                `,
-              });
-
-              marker.addListener("click", () => {
-                infoWindow.open(map, marker);
-              });
-            })
-            .catch((error) => {
-              console.error(
-                `Failed to get geocode for address: ${stall.address}`,
-                error
-              );
-            });
-        } else {
-          console.warn(`Stall ${stall.name} is missing address data`);
-        }
-      });
-
       // Update the HTML content
       const stallList = document.getElementById("stall-list");
       stallList.innerHTML = stalls
@@ -129,20 +87,6 @@ function loadStalls() {
     })
     .catch((error) => {
       console.error("Error fetching stalls:", error);
-    });
-}
-
-function getGeocode(address) {
-  return fetch(
-    `${baseUrl}/api/maps/geocode?address=${encodeURIComponent(address)}`
-  )
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.status === "OK") {
-        return data.results[0].geometry.location;
-      } else {
-        throw new Error(data.status);
-      }
     });
 }
 

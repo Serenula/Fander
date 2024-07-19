@@ -6,7 +6,6 @@ const createStall = async (req, res) => {
 
   try {
     // const geoLocation = await getGeocode(address);
-
     const newStall = new Stall({
       name,
       address,

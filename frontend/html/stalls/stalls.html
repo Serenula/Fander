@@ -58,7 +58,6 @@
         hx-post="/stalls/create"
         hx-target="#stall-list"
         hx-swap="beforeend"
-        onsubmit="handleCreateStall(event)"
       >
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" required /><br /><br />
@@ -115,6 +114,11 @@
             <p><strong>Vegetable:</strong> ${stall.vegetable}</p>
             <p><strong>Fish:</strong> ${stall.fish}</p>
             <p><strong>Misc:</strong> ${stall.misc}</p>
+            ${
+              checkAdmin()
+                ? `<button onclick="deleteStall('${stall._id}')">Delete</button>`
+                : ""
+            }
           </div>
         `
             )
@@ -122,25 +126,33 @@
         }
       });
 
-      function handleCreateStall(event) {
-        event.preventDefault();
-        const form = event.target;
-        const address = form.address.value;
+      function deleteStall(stallId) {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.accessToken) {
+          console.error("No access token found in localStorage");
+          return;
+        }
 
-        getGeocode(address)
-          .then((geoLocation) => {
-            form.location.value = JSON.stringify({
-              type: "Point",
-              coordinates: [geoLocation.lng, geoLocation.lat],
-            });
-
-            htmx.trigger(form, "submit");
+        fetch(`/api/stalls/${stallId}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.accessToken}`,
+          },
+        })
+          .then((response) => {
+            if (!response.ok) {
+              return response.json().then((data) => {
+                throw new Error(
+                  "Network response was not ok: " + JSON.stringify(data)
+                );
+              });
+            }
+            // Refresh the stall list
+            htmx.trigger("#stall-list", "load");
           })
           .catch((error) => {
-            console.error("Geocode error:", error);
-            alert(
-              "Failed to get location data. Please check the address and try again."
-            );
+            console.error("Error deleting stall:", error);
           });
       }
     </script>
