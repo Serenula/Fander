@@ -22,6 +22,22 @@
           }
         })
         .catch((error) => console.error("Error fetching API key:", error));
+
+      function fetchGeocode(address) {
+        return fetch(
+          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+            address
+          )}&key=${apiKey}`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "OK") {
+              return data.results[0].geometry.location;
+            } else {
+              throw new Error(data.status);
+            }
+          });
+      }
     </script>
   </head>
   <body>
@@ -230,23 +246,33 @@
 
         // Initialize the map
         window.initMap = function () {
-          const map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 15,
-            center: { lat: 1.3521, lng: 103.8198 }, // Default to Singapore
-            mapId: "7fd6099aa7a086b1",
-          });
+          fetchGeocode(address)
+            .then((location) => {
+              const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 15,
+                center: location,
+                mapId: "7fd6099aa7a086b1",
+              });
 
-          new google.maps.marker.AdvancedMarkerElement({
-            map: map,
-            position: { lat: 1.3521, lng: 103.8198 }, // Placeholder coordinates
-            title: address,
-          });
+              new google.maps.marker.AdvancedMarkerElement({
+                map: map,
+                position: location,
+                title: address,
+              });
 
-          stallInfoDiv.innerHTML = `
+              stallInfoDiv.innerHTML = `
             <h3>${stallId}</h3>
             <p><strong>Address:</strong> ${address}</p>
             <p>Map loaded successfully.</p>
           `;
+            })
+            .catch((error) => {
+              console.error("Error fetching geocode:", error);
+              stallInfoDiv.innerHTML = ` <h3>${stallId}</h3>
+                <p><strong>Address:</strong> ${address}</p>
+                <p>Error loading map.</p>
+              `;
+            });
         };
       }
 
