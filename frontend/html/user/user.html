@@ -16,6 +16,8 @@
       hx-get="/user/profile"
       hx-trigger="load"
       hx-target="#user-profile"
+      hx-swap="innerHTML"
+      class="profile-info"
     >
       <!-- profile should be loaded here-->
     </div>
@@ -98,6 +100,17 @@
         changePassword.style.display =
           changePassword.style.display === "none" ? "block" : "none";
       }
+
+      document.body.addEventListener("htmx:afterOnLoad", function (evt) {
+        if (evt.detail.elt.id === "user-profile") {
+          const user = JSON.parse(evt.detail.xhr.responseText);
+          const profileDiv = document.getElementById("user-profile");
+          profileDiv.innerHTML = `
+            <p><strong></strong> ${user.name}</p>
+            <p><strong></strong> ${user.email}</p>
+          `;
+        }
+      });
     </script>
   </body>
 </html>

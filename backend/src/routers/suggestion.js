@@ -9,7 +9,7 @@ const auth = require("../middleware/auth");
 const adminAuth = require("../middleware/adminAuth");
 
 router.post("/", auth, createSuggestion);
-router.get("/", auth, adminAuth, getAllSuggestions);
-router.put("/:suggestionId/status", auth, adminAuth, updateSuggestionStatus);
+router.get("/", adminAuth, getAllSuggestions);
+router.put("/:suggestionId/status", adminAuth, updateSuggestionStatus);
 
 module.exports = router;

@@ -14,6 +14,6 @@ router.post("/", auth, createReview);
 router.get("/stall/:stallId", getReviewsForStall);
 router.post("/:reviewId/interact", auth, interactWithReview);
 router.post("/:reviewId/reply", auth, replyToReview);
-router.delete("/:reviewId", auth, adminAuth, deleteReview);
+router.delete("/:reviewId", adminAuth, deleteReview);
 
 module.exports = router;
