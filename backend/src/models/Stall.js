@@ -10,6 +10,10 @@ const stallSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    hours: {
+      type: String,
+      required: true,
+    },
     meat: {
       type: Number,
       required: true,
