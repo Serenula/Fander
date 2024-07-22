@@ -11,7 +11,7 @@ const auth = require("../middleware/auth");
 const adminAuth = require("../middleware/adminAuth");
 
 router.post("/", auth, createReview);
-router.get("/stall/:stallId", getReviewsForStall);
+router.get("/:stallId", getReviewsForStall);
 router.post("/:reviewId/interact", auth, interactWithReview);
 router.post("/:reviewId/reply", auth, replyToReview);
 router.delete("/:reviewId", adminAuth, deleteReview);

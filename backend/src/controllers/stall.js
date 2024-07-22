@@ -70,9 +70,24 @@ const deleteStall = async (req, res) => {
   }
 };
 
+const getStallById = async (req, res) => {
+  try {
+    const getStall = await Stall.findById(req.params.id);
+
+    if (!getStall) {
+      return res.status(404).json({ message: "Stall not found" });
+    }
+    res.json(getStall);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 module.exports = {
   createStall,
   getAllStalls,
   updateStall,
   deleteStall,
+  getStallById,
 };
