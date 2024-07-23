@@ -1,10 +1,15 @@
 const Review = require("../models/Review");
 const Stall = require("../models/Stall");
 
-// Create a new review
 const createReview = async (req, res) => {
   const { stallId, rating, comment } = req.body;
-  const userId = req.user._id;
+  const userId = req.user ? req.user._id : null;
+
+  // Validate required fields
+  if (!stallId || !rating || !comment || !userId) {
+    console.log("Validation failed:", { stallId, rating, comment, userId });
+    return res.status(400).json({ message: "All fields are required" });
+  }
 
   try {
     const newReview = new Review({
@@ -14,16 +19,21 @@ const createReview = async (req, res) => {
       comment,
     });
 
+    console.log("Saving new review:", newReview);
+
     await newReview.save();
 
-    // Update the stall with the new review
+    console.log("Review saved, updating stall:", stallId);
+
     await Stall.findByIdAndUpdate(stallId, {
       $push: { reviews: newReview._id },
     });
 
+    console.log("Stall updated with new review");
+
     res.status(201).json(newReview);
   } catch (error) {
-    console.error(error);
+    console.error("Error creating review:", error);
     res.status(500).json({ message: "Server error" });
   }
 };

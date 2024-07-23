@@ -3,7 +3,7 @@ const User = require("../models/User");
 
 const getUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId).select("-password");
+    const user = await User.findById(req.user._id).select("-password");
     res.json(user);
   } catch (error) {
     console.error(error);
@@ -16,7 +16,7 @@ const updateUserProfile = async (req, res) => {
 
   try {
     const updatedUser = await User.findByIdAndUpdate(
-      req.user.userId,
+      req.user._id,
       { name, email },
       { new: true }
     ).select("-password");
@@ -32,7 +32,7 @@ const changePassword = async (req, res) => {
   const { currentPassword, newPassword, confirmPassword } = req.body;
 
   try {
-    const user = await User.findById(req.user.userId);
+    const user = await User.findById(req.user._id);
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
     }
@@ -59,7 +59,7 @@ const changePassword = async (req, res) => {
 
 const deactivateUserAccount = async (req, res) => {
   try {
-    await User.findByIdAndUpdate(req.user.userId, { active: false });
+    await User.findByIdAndUpdate(req.user._id, { active: false });
     res.json({ message: "Account deactivated" });
   } catch (error) {
     console.error(error);
@@ -69,7 +69,7 @@ const deactivateUserAccount = async (req, res) => {
 
 const reactivateUserAccount = async (req, res) => {
   try {
-    await User.findByIdAndUpdate(req.user.userId, { active: true });
+    await User.findByIdAndUpdate(req.user._id, { active: true });
     res.json({ message: "Account reactivated" });
   } catch (error) {
     console.error(error);

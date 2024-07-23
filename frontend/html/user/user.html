@@ -30,7 +30,7 @@
         id="edit-profile-form"
         hx-put="/user/edit"
         hx-target="#user-profile"
-        hx-swap="outerHTML"
+        hx-swap="innerHTML"
       >
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" /><br /><br />
@@ -46,7 +46,7 @@
         id="change-password-form"
         hx-put="/user/change-password"
         hx-target="#user-profile"
-        hx-swap="outerHTML"
+        hx-swap="innerHTML"
       >
         <label for="current-password">Current Password:</label>
         <input
@@ -84,31 +84,32 @@
           editProfile.style.display === "none" ? "block" : "none";
       }
 
-      function togglePasswordVisibility() {
-        const passwordField = document.getElementById("password");
-        const checkbox = document.getElementById("show-password");
-
-        if (checkbox.checked) {
-          passwordField.type = "text";
-        } else {
-          passwordField.type = "password";
-        }
-      }
-
       function toggleChangePassword() {
         const changePassword = document.getElementById("change-password");
         changePassword.style.display =
           changePassword.style.display === "none" ? "block" : "none";
       }
 
-      document.body.addEventListener("htmx:afterOnLoad", function (evt) {
+      document.body.addEventListener("htmx:afterSwap", function (evt) {
         if (evt.detail.elt.id === "user-profile") {
-          const user = JSON.parse(evt.detail.xhr.responseText);
-          const profileDiv = document.getElementById("user-profile");
-          profileDiv.innerHTML = `
-            <p><strong></strong> ${user.name}</p>
-            <p><strong></strong> ${user.email}</p>
-          `;
+          try {
+            const user = JSON.parse(evt.detail.xhr.responseText);
+            if (user && user.name && user.email) {
+              const profileDiv = document.getElementById("user-profile");
+              profileDiv.innerHTML = `
+                <p><strong>Name:</strong> ${user.name}</p>
+                <p><strong>Email:</strong> ${user.email}</p>
+              `;
+            } else {
+              console.error("Invalid user data:", user);
+              document.getElementById("user-profile").innerHTML =
+                "<p>Error loading profile information.</p>";
+            }
+          } catch (error) {
+            console.error("Error parsing response:", error);
+            document.getElementById("user-profile").innerHTML =
+              "<p>Error loading profile information.</p>";
+          }
         }
       });
     </script>

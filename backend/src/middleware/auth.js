@@ -15,7 +15,7 @@ const auth = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.ACCESS_SECRET);
-    req.user = decoded;
+    req.user = { _id: decoded.userId, role: decoded.role };
     next();
   } catch (error) {
     const refreshToken = req.headers["x-refresh-token"];
@@ -39,7 +39,7 @@ const auth = (req, res, next) => {
       );
 
       res.setHeader("Authorization", `Bearer ${newAccessToken}`);
-      req.user = decodedRefresh;
+      req.user = { _id: decodedRefresh.userId, role: decodedRefresh.role };
       next();
     } catch (refreshError) {
       console.error("Refresh token failed to validate:", refreshError);
