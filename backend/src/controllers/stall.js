@@ -1,15 +1,38 @@
 const Stall = require("../models/Stall");
-// const { getGeocode } = require("../utilities/googleMaps");
+const axios = require("axios");
+
+const getGeocode = async (address) => {
+  const response = await axios.get(
+    "https://maps.googleapis.com/maps/api/geocode/json",
+    {
+      params: {
+        address: address,
+        key: process.env.GOOGLE_MAPS_API_KEY,
+      },
+    }
+  );
+
+  if (response.data.status === "OK") {
+    return response.data.results[0].geometry.location;
+  } else {
+    throw new Error("Geocoding API error");
+  }
+};
 
 const createStall = async (req, res) => {
-  const { name, address, meat, vegetable, fish, misc } = req.body;
+  const { name, address, hours, meat, vegetable, fish, misc } = req.body;
 
   try {
-    // const geoLocation = await getGeocode(address);
+    const geoLocation = await getGeocode(address);
+
     const newStall = new Stall({
       name,
       address,
       hours,
+      location: {
+        type: "Point",
+        coordinates: [geoLocation.lng, geoLocation.lat],
+      },
       meat,
       vegetable,
       fish,
@@ -34,7 +57,7 @@ const getAllStalls = async (req, res) => {
 };
 
 const updateStall = async (req, res) => {
-  const { name, address, location, dishes, cost } = req.body;
+  const { name, address, hours, meat, vegetable, fish, misc } = req.body;
 
   try {
     const updatedStall = await Stall.findByIdAndUpdate(
@@ -42,9 +65,15 @@ const updateStall = async (req, res) => {
       {
         name,
         address,
-        location,
-        dishes,
-        cost,
+        hours,
+        location: {
+          type: "Point",
+          coordinates: [geolocation.lng, geoLocation.lat],
+        },
+        meat,
+        vegetable,
+        fish,
+        misc,
       },
       { new: true }
     );
@@ -85,10 +114,62 @@ const getStallById = async (req, res) => {
   }
 };
 
+const searchStalls = async (req, res) => {
+  const { query } = req.query;
+  try {
+    const stalls = await Stall.find({
+      $or: [
+        { name: { $regex: query, $options: "i" } },
+        { address: { $regex: query, $options: "i" } },
+        { hours: { $regex: query, $options: "i" } },
+      ],
+    });
+    res.json(stalls);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+const findNearbyStalls = async (req, res) => {
+  const { lat, lng, distance } = req.query;
+
+  if (!lat || !lng || !distance) {
+    return res
+      .status(400)
+      .json({ message: "Latitude, longitude, and distance are required" });
+  }
+
+  const parsedDistance = parseFloat(distance);
+
+  if (isNaN(parsedDistance)) {
+    return res.status(400).json({ message: "Invalid distance parameter" });
+  }
+
+  try {
+    const stalls = await Stall.find({
+      location: {
+        $geoWithin: {
+          $centerSphere: [
+            [parseFloat(lng), parseFloat(lat)],
+            parsedDistance / 3963.2,
+          ],
+        },
+      },
+    });
+
+    res.json(stalls);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 module.exports = {
   createStall,
   getAllStalls,
   updateStall,
   deleteStall,
   getStallById,
+  searchStalls,
+  findNearbyStalls,
 };
