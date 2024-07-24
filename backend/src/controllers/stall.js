@@ -151,7 +151,7 @@ const findNearbyStalls = async (req, res) => {
         $geoWithin: {
           $centerSphere: [
             [parseFloat(lng), parseFloat(lat)],
-            parsedDistance / 3963.2,
+            parsedDistance / 6378.1, // this is the radius of Earth in km
           ],
         },
       },
