@@ -89,7 +89,9 @@
             <img src="${stall.imageUrl}" alt="${
               stall.name
             }" class="stall-image">
-            <p><strong>Address:</strong> ${stall.address}</p>
+            <p><strong>Address:</strong> <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+              stall.address
+            )}" target="_blank">${stall.address}</a></p>
             <p><strong>Operating Hours:</strong> ${stall.hours}</p>
             <h3>Dishes</h3>
             <p><strong>Meat:</strong> $${stall.meat}</p>
@@ -140,9 +142,7 @@
                   review._id
                 }')">Reply</button>
                 <div id="reply-form-${review._id}" style="display: none;">
-                  <form hx-post="/api/reviews/${
-                    review._id
-                  }/reply" hx-target="#reviews-list" hx-swap="beforeend">
+                  <form onsubmit="submitReply(event, '${review._id}')">
                     <label for="comment">Comment:</label>
                     <textarea name="comment" required></textarea><br><br>
                     <button type="submit">Submit Reply</button>
@@ -153,7 +153,7 @@
                     .map(
                       (reply) => `
                     <div class="reply">
-                      <p><strong>Reply by:</strong> ${reply.user.name}</p>
+                      <p><strong>${reply.user.name}</strong></p>
                       <p>${reply.comment}</p>
                     </div>
                   `
@@ -205,6 +205,34 @@
         const replyForm = document.getElementById(`reply-form-${reviewId}`);
         replyForm.style.display =
           replyForm.style.display === "none" ? "block" : "none";
+      }
+
+      function submitReply(event, reviewId) {
+        event.preventDefault();
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.accessToken) {
+          console.error("No access token found in localStorage");
+          return;
+        }
+
+        const formData = new FormData(event.target);
+        const data = {};
+        formData.forEach((value, key) => (data[key] = value));
+
+        fetch(`http://127.0.0.1:5001/api/reviews/${reviewId}/reply`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.accessToken}`,
+            "x-refresh-token": user.refreshToken,
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => response.json())
+          .then((review) => {
+            fetchReviews(review.stall);
+          })
+          .catch((error) => console.error("Error submitting reply:", error));
       }
 
       function submitReview(event) {

@@ -43,10 +43,9 @@ const getReviewsForStall = async (req, res) => {
   const { stallId } = req.params;
 
   try {
-    const reviews = await Review.find({ stall: stallId }).populate(
-      "user",
-      "name"
-    );
+    const reviews = await Review.find({ stall: stallId })
+      .populate("user", "name")
+      .populate("replies.user", "name");
 
     res.json(reviews);
   } catch (error) {
@@ -106,8 +105,12 @@ const replyToReview = async (req, res) => {
     });
 
     await review.save();
+    const populatedReview = await Review.findById(reviewId).populate(
+      "replies.user",
+      "name"
+    );
 
-    res.json(review);
+    res.json(populatedReview);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
