@@ -134,6 +134,8 @@
                 <p><strong>Rating:</strong> ${review.rating}</p>
                 <p><strong>Comment:</strong> ${review.comment}</p>
                 <p><strong>By:</strong> ${review.user.name}</p>
+                <p><strong>Likes:</strong> ${review.likes.length}</p>
+                <p><strong>Dislikes:</strong> ${review.dislikes.length}</p>
                 <button onclick="likeReview('${review._id}')">Like</button>
                 <button onclick="dislikeReview('${
                   review._id
