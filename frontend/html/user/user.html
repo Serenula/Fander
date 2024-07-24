@@ -5,11 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>User Profile</title>
     <link rel="stylesheet" href="../../css/user.css" />
+    <link rel="stylesheet" href="../../css/styles.css" />
     <script src="../../js/config.js"></script>
     <script src="../../node_modules/htmx.org/dist/htmx.js"></script>
     <script src="../../js/adminCheck.js"></script>
   </head>
   <body>
+    <div id="navbar"></div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        let navbarContent = `
+          <nav>
+            <ul>
+              <li><a href="/html/stalls/stalls.html">Stalls</a></li>
+        `;
+
+        if (user) {
+          navbarContent += `
+            <li><a href="/html/user/user.html">User Profile</a></li>
+            <li><a href="#" onclick="logout()">Logout</a></li>
+          `;
+          if (user.role === "superAdmin") {
+            navbarContent += `
+              <li><a href="/html/admin/admin.html">Admin</a></li>
+            `;
+          }
+        } else {
+          navbarContent += `
+            <li><a href="/html/auth/login.html">Login</a></li>
+            <li><a href="/html/auth/register.html">Register</a></li>
+          `;
+        }
+
+        navbarContent += `
+            </ul>
+          </nav>
+        `;
+
+        document.getElementById("navbar").innerHTML = navbarContent;
+      });
+
+      function logout() {
+        localStorage.removeItem("user");
+        window.location.href = "/html/auth/login.html";
+      }
+    </script>
     <h1>User Profile</h1>
     <div
       id="user-profile"

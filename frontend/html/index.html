@@ -6,6 +6,14 @@
     <title>My App</title>
     <script src="../../node_modules/htmx.org/dist/htmx.js"></script>
     <script src="../js/main.js" defer></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || user.role !== "superAdmin") {
+          window.location.href = "htm;/auth/login.html";
+        }
+      });
+    </script>
     <!-- Add any other stylesheets or scripts you need -->
   </head>
   <body>
