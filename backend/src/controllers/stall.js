@@ -48,7 +48,26 @@ const createStall = async (req, res) => {
 
 const getAllStalls = async (req, res) => {
   try {
-    const stalls = await Stall.find();
+    const stalls = await Stall.aggregate([
+      {
+        $lookup: {
+          from: "reviews",
+          localField: "_id",
+          foreignField: "stall",
+          as: "reviews",
+        },
+      },
+      {
+        $addFields: {
+          averageRating: { $avg: "$reviews.rating" },
+        },
+      },
+      {
+        $project: {
+          reviews: 0, // exclude reviews as we only want ratings
+        },
+      },
+    ]);
     res.json(stalls);
   } catch (error) {
     console.error(error);

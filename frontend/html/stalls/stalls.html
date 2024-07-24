@@ -138,6 +138,7 @@
             <h3>${stall.name}</h3>
             <p><strong>Address:</strong> ${stall.address}</p>
             <p><strong>Operating Hours:</strong> ${stall.hours}</p>
+            <p><strong>Average Rating:</strong> ${stall.averageRating ? stall.averageRating.toFixed(1) : "No ratings yet"}</p>
             <button onclick="viewStallDetails('${
               stall._id
             }')">View Details</button>
