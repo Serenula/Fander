@@ -23,7 +23,7 @@ const createStall = async (req, res) => {
   const { name, address, hours, meat, vegetable, fish, misc } = req.body;
 
   try {
-    const geoLocation = await getGeocode(address);
+    const geoLocation = await getGeocode(address); // converts address to geolocation
 
     const newStall = new Stall({
       name,

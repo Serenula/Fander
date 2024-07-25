@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../../css/termsOfUse.css" />
+    <link rel="stylesheet" href="../../css/styles.css" />
+    <title>Terms of Use</title>
+  </head>
+  <body>
+    <div id="navbar"></div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        let navbarContent = `
+          <nav>
+            <ul>
+                <li><button onclick="history.back()">Back</button></li>
+              <li><a href="/html/stalls/stalls.html">Stalls</a></li>
+        `;
+
+        if (user) {
+          navbarContent += `
+            <li><a href="/html/user/user.html">User Profile</a></li>
+            <li><a href="#" onclick="logout()">Logout</a></li>
+          `;
+          if (user.role === "superAdmin") {
+            navbarContent += `
+              <li><a href="/html/admin/admin.html">Admin</a></li>
+            `;
+          }
+        } else {
+          navbarContent += `
+            <li><a href="/html/auth/login.html">Login</a></li>
+            <li><a href="/html/auth/register.html">Register</a></li>
+          `;
+        }
+
+        navbarContent += `
+            </ul>
+          </nav>
+        `;
+
+        document.getElementById("navbar").innerHTML = navbarContent;
+      });
+
+      function logout() {
+        localStorage.removeItem("user");
+        window.location.href = "/html/auth/login.html";
+      }
+    </script>
+    <div class="container">
+      <h1>Terms of Use</h1>
+      <button class="accordion">Legal</button>
+      <div class="panel">
+        <h2>Agreement</h2>
+        <ol>
+          <li>
+            By visiting our website or using our services, the user is entering
+            into a legal agreement with us, consisting of these Terms of Use,
+            our Privacy Policy, and our additional services legal terms.
+          </li>
+          <li>
+            By using our services, the user signifies their consent to these
+            terms. The user may not use our services if they do not consent to
+            all our terms.
+          </li>
+        </ol>
+        <h2>User Account</h2>
+        <ol>
+          <li>To use our services, the user needs to create a user account.</li>
+          <li>
+            The user should keep their username and password protected and safe,
+            and only allow people they trust to access the account or website
+            settings.
+          </li>
+          <li>We reserve the right to terminate user accounts.</li>
+        </ol>
+      </div>
+
+      <button class="accordion">User Obligations</button>
+      <div class="panel">
+        <h2>The user represent and warrant that:</h2>
+        <ol>
+          <li>
+            In order to use our services, there are certain obligations and
+            conditions the user needs to meet.
+          </li>
+          <li>
+            The user must own all rights in any content the user upload or
+            publish via our services, ensure that such content is legal and
+            reliable, and that anything the user do with it (or enable Us or the
+            user end users to do with it) is legal.
+          </li>
+        </ol>
+        <h2>The user undertake and agree to:</h2>
+        <ol>
+          <li>
+            Be responsible for their actions and for the actions of anyone who
+            accesses their user account.
+          </li>
+          <li>
+            Our partners may send the user promotional messages and content. The
+            user can easily opt-out of receiving promotional messages by
+            contacting us.
+          </li>
+        </ol>
+        <h2>The user agree and undertake to the following:</h2>
+        <ol>
+          <li>Not do anything that might harm Us or anyone else.</li>
+          <li>
+            Among others, the user may not copy our materials, use any content
+            in an illegal or harmful manner, use our services or content on any
+            platform or website not provided by us, make any misrepresentations
+            or abuse our Services, or otherwise violate anyone's rights or any
+            applicable laws.
+          </li>
+          <li>
+            Failure to abide by any of these rules may bring us to cancel the
+            their account and stop providing the user with any services.
+          </li>
+        </ol>
+      </div>
+
+      <button class="accordion">Content and Ownership</button>
+      <div class="panel">
+        <h2>The Users Intellectual Property</h2>
+        <ol>
+          <li>
+            The user reserves the rights on all uploaded images including
+            profile image and stall related images
+          </li>
+          <li>
+            By uploading the images onto the platform, the user wavies any
+            financial claim to the images and automatically agrees to unlimited
+            usage of stall image both for display and marketing usage.
+          </li>
+          <li>
+            At no time will the user be able to demand royalties in any way,
+            shape or form for the usage of uploaded images.
+          </li>
+        </ol>
+        <h2>Intellectual Property</h2>
+        <ol>
+          <li>
+            We own all rights in and to our services, content, data, technology
+            and features.
+          </li>
+          <li>
+            The user may use our services and content so long as they fully
+            comply with these terms.
+          </li>
+        </ol>
+        <h2>Feedback and Suggestions</h2>
+        <ol>
+          <li>
+            We welcome any form of feedback or suggestions. If the user do
+            provide us with any, please make sure that it is accurate and legal.
+          </li>
+        </ol>
+      </div>
+
+      <button class="accordion">Misconduct and Copyrights</button>
+      <div class="panel">
+        <h2>Misconduct and Abuse</h2>
+        <ol>
+          <li>
+            If the user witness or experience any misconduct or abusive behavior
+            by anyone using our services, please let us know.
+          </li>
+        </ol>
+        <h2>Copyrights</h2>
+        <ol>
+          <li>We respect the intellectual property rights of others.</li>
+          <li>
+            If copyrighted works were used inappropriately by any of our users,
+            please let us know and provide us with all the necessary
+            information, and we will take care of it in accordance with the IPOS
+          </li>
+          <li>
+            If we receive a copyright infringement notice regarding the user's
+            website or content, we may remove or cancel their website and
+            account.
+          </li>
+        </ol>
+      </div>
+
+      <button class="accordion">Disclaimer of Warranties</button>
+      <div class="panel">
+        <ol>
+          <li>
+            We make no warranties regarding our services, including their
+            quality, reliability, security, compatibility and conditions.
+          </li>
+          <li>
+            We will monitor all interactions on the platform such as review and
+            replies to reviews and comments
+          </li>
+          <li>
+            If there are risks in using our services, the user accept such risks
+            upon creating an account with Us.
+          </li>
+        </ol>
+      </div>
+
+      <button class="accordion">Limitation of Liability</button>
+      <div class="panel">
+        <ol>
+          <li>
+            To the fullest extent permitted by law in each applicable
+            jurisdiction, WE, Our officers, directors, shareholders, employees,
+            affiliates and/or agents shall not be liable to the user for any
+            direct, indirect, incidental, special, punitive, exemplary or
+            consequential damages whatsoever, including any damages resulting
+            from (1) errors, mistakes, or inaccuracies of or in any content; (2)
+            any personal injury or property damage related to the user's use of
+            the Our Services; (3) any unauthorized access to or use of our
+            servers and/or any personal information and/or other information
+            stored therein; (4) any interruption or cessation of transmission to
+            or from the Our Services; (5) the use or display of any Content or
+            User Content posted, emailed, transmitted, or otherwise made
+            available via the Our Services; (6) events beyond the reasonable
+            control of Us, including any internet failures, equipment failures,
+            electrical power failures, strikes, labor disputes, riots,
+            insurrections, civil disturbances, shortages of labor or materials,
+            fires, floods, storms, earthquakes, explosions, acts of God, war,
+            terrorism, intergalactic struggles, governmental actions, orders of
+            courts, agencies or tribunals or non-performance of third parties;
+            and/or (7) loss of use, data, profits, goodwill, or other intangible
+            losses, resulting from the use or the inability to use any or all of
+            Our Services.
+          </li>
+          <li>
+            The user acknowledges and agrees that these limitations of liability
+            are agreed allocations of risk constituting in part the
+            consideration for Our services to the user, and such limitations
+            will apply even if We have been advised of the possibility of such
+            liabilities.
+          </li>
+        </ol>
+      </div>
+
+      <button class="accordion">Indemnity</button>
+      <div class="panel">
+        <ol>
+          <li>
+            If we get sued or are otherwise placed in harm's way because of
+            something the user did, the user will bear the associated costs and
+            damages.
+          </li>
+        </ol>
+      </div>
+      <button class="accordion">General</button>
+      <div class="panel">
+        <h2>Changes & Updates</h2>
+        <ol>
+          <li>
+            We may make changes to our services or to these terms at any time.
+          </li>
+        </ol>
+        <h2>Governing Law & Jurisdiction; Class Action Waiver</h2>
+        <ol>
+          <li>
+            Our Terms the rights and remedies provided hereunder, and any and
+            all claims and disputes related hereto and/or to the Our Services,
+            their interpretation, or the breach, termination or validity
+            thereof, the relationships which result from or pursuant to the Our
+            Terms, or any related transaction or purchase, shall be governed by,
+            construed under and enforced in all respects solely and exclusively
+            in accordance with the internal substantive laws of the Republic of
+            Singapore, without respect to its conflict of laws principles.
+          </li>
+          <li>
+            Any and all such claims and disputes shall be brought in, and the
+            user hereby consent to them being decided exclusively by, a court of
+            competent jurisdiction located in Singapore, Singapore. The
+            application of the United Nations Convention of Contracts for the
+            International Sale of Goods is hereby expressly excluded.
+          </li>
+          <li>
+            Subject to any applicable law, all disputes between the user and We
+            shall only be resolved on an individual basis and the user shall not
+            have the right to bring any claim against Us as a plaintiff or a
+            member of a class, consolidated or representative actions (or any
+            other legal proceedings conducted by a group or by representatives
+            on behalf of others).
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <script>
+      const acc = document.getElementsByClassName("accordion");
+      let i;
+
+      for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function () {
+          this.classList.toggle("active");
+          const panel = this.nextElementSibling;
+          if (panel.style.display === "block") {
+            panel.style.display = "none";
+          } else {
+            panel.style.display = "block";
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

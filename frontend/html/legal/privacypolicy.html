@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Privacy Policy</title>
+  </head>
+  <body>
+    <div id="navbar"></div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        let navbarContent = `
+          <nav>
+            <ul>
+                <li><button onclick="history.back()">Back</button></li>
+              <li><a href="/html/stalls/stalls.html">Stalls</a></li>
+        `;
+
+        if (user) {
+          navbarContent += `
+            <li><a href="/html/user/user.html">User Profile</a></li>
+            <li><a href="#" onclick="logout()">Logout</a></li>
+          `;
+          if (user.role === "superAdmin") {
+            navbarContent += `
+              <li><a href="/html/admin/admin.html">Admin</a></li>
+            `;
+          }
+        } else {
+          navbarContent += `
+            <li><a href="/html/auth/login.html">Login</a></li>
+            <li><a href="/html/auth/register.html">Register</a></li>
+          `;
+        }
+
+        navbarContent += `
+            </ul>
+          </nav>
+        `;
+
+        document.getElementById("navbar").innerHTML = navbarContent;
+      });
+
+      function logout() {
+        localStorage.removeItem("user");
+        window.location.href = "/html/auth/login.html";
+      }
+    </script>
+  </body>
+</html>

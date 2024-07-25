@@ -49,6 +49,7 @@
         let navbarContent = `
           <nav>
             <ul>
+              <li><button onclick="history.back()">Back</button></li>
               <li><a href="/html/stalls/stalls.html">Stalls</a></li>
         `;
 
@@ -285,7 +286,7 @@
           .then((stall) => {
             htmx.trigger("#stall-list","load")
           })
-.catch((error)=> console.error("Error creating stall:", error))
+          .catch((error)=> console.error("Error creating stall:", error))
         })
         .catch((error)=>console.error("Error fetching geocode:", error))
       }

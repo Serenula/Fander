@@ -19,6 +19,7 @@
         let navbarContent = `
           <nav>
             <ul>
+              <li><button onclick="history.back()">Back</button></li>
               <li><a href="/html/stalls/stalls.html">Stalls</a></li>
         `;
 
@@ -111,6 +112,11 @@
         <button type="submit">Change Password</button>
       </form>
     </div>
+    <a href="/html/legal/termsofuse.html"><strong>Terms of Use</strong></a
+    ><br />
+    <a href="https://forms.gle/jv5Dn4ALpJUfpc4W9"
+      ><strong>Submit a Stall</strong></a
+    >
     <script>
       document.body.addEventListener("htmx:configRequest", (event) => {
         const user = JSON.parse(localStorage.getItem("user"));
