@@ -1,10 +1,12 @@
 require("dotenv").config();
 
 const express = require("express");
-const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const path = require("path");
+const connectDB = require("./src/config/databse");
+const corsOptions = require("./src/config/cors");
+const errorHandler = require("./src/middleware/errorHandler");
 const authRouter = require("./src/routers/auth");
 const userRouter = require("./src/routers/user");
 const stallRouter = require("./src/routers/stall");
@@ -12,43 +14,19 @@ const adminRouter = require("./src/routers/admin");
 const reviewRouter = require("./src/routers/review");
 const suggestionRouter = require("./src/routers/suggestion");
 const mapsRouter = require("./src/routers/googleMaps");
-const errorHandler = require("./src/middleware/errorHandler");
-const connectDB = require("./src/db/db");
-const setCORPHeader = require("./src/middleware/setCORPHeader");
-
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
-  standardHeaders: true,
-  legacyHeaders: false,
-});
+const upload = require("./services/gridfsStorage");
+const {
+  uploadProfilePicture,
+  getFileByFilename,
+  deleteFile,
+} = require("./services/fileHandler");
 
 connectDB();
 
 const app = express();
 
 // Middleware
-app.use(
-  cors({
-    origin: ["http://127.0.0.1:8080", "http://localhost:8080"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-      "hx-request",
-      "hx-target",
-      "hx-trigger",
-      "hx-include",
-      "hx-prompt",
-      "hx-headers",
-      "hx-sync",
-      "hx-boosted",
-      "hx-current-url",
-      "x-refresh-token",
-    ],
-    credentials: true,
-  })
-);
+app.use(corsOptions);
 app.use(helmet());
 app.use(
   helmet.contentSecurityPolicy({
@@ -67,25 +45,26 @@ app.use(
     },
   })
 );
-app.use(limiter);
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+    standardHeaders: true,
+    legacyHeaders: false,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use(setCORPHeader);
-// Serve static files from frontend directory
-app.use(express.static("frontend"));
-
-// Serve static files from the 'uploads' directory
-app.use(
-  "/uploads",
-  express.static(path.join(__dirname, "uploads"), {
-    setHeaders: (res) => {
-      res.set("Cross-Origin-Resource-Policy", "cross-origin");
-    },
-  })
-);
-
 // Routes
+app.post(
+  "/api/user/profile-picture",
+  upload.single("profilePicture"),
+  uploadProfilePicture
+);
+app.get("/uploads/:filename", getFileByFilename);
+app.delete("/uploads/:filename", deleteFile);
+
 app.use("/api/auth", authRouter);
 app.use("/api/stalls", stallRouter);
 app.use("/api/admins", adminRouter);
@@ -93,6 +72,7 @@ app.use("/api/user", userRouter);
 app.use("/api/reviews", reviewRouter);
 app.use("/api/suggestions", suggestionRouter);
 app.use("/api/maps", mapsRouter);
+
 // Error Handling
 app.use(errorHandler);
 

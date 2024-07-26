@@ -99,6 +99,7 @@ const uploadProfilePicture = async (req, res) => {
 
     user.profilePictureUrl = `/uploads/${req.file.filename}`;
     await user.save();
+    ç;
 
     res.json({ profilePictureUrl: user.profilePictureUrl });
   } catch (error) {
