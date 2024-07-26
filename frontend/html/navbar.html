@@ -1,0 +1,39 @@
+<nav>
+  <ul>
+    <li><button onclick="history.back()">Back</button></li>
+    <li><a href="/html/stalls/stalls.html">Stalls</a></li>
+    <li><a href="/html/user/user.html">User Profile</a></li>
+    <li><a href="#" onclick="logout()">Logout</a></li>
+    <span id="user-nav"></span>
+  </ul>
+</nav>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    let userNavContent = ``;
+
+    if (user) {
+      userNavContent += `
+          <li><a href="/html/user/user.html">User Profile</a></li>
+          <li><a href="#" onclick="logout()">Logout</a></li>
+        `;
+      if (user.role === "superAdmin") {
+        userNavContent += `
+            <li><a href="/html/admin/admin.html">Admin</a></li>
+          `;
+      }
+    } else {
+      userNavContent += `
+          <li><a href="/html/auth/login.html">Login</a></li>
+          <li><a href="/html/auth/register.html">Register</a></li>
+        `;
+    }
+
+    document.getElementById("user-nav").innerHTML = userNavContent;
+  });
+
+  function logout() {
+    localStorage.removeItem("user");
+    window.location.href = "/html/auth/login.html";
+  }
+</script>

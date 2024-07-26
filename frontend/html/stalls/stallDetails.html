@@ -8,49 +8,10 @@
     <link rel="stylesheet" href="../../css/styles.css"
     <script src="../../js/config.js"></script>
     <script src="../../node_modules/htmx.org/dist/htmx.js"></script>
+    <script src="../../js/include.js"></script>
   </head>
-  <body>
-    <div id="navbar"></div>
-
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const user = JSON.parse(localStorage.getItem("user"));
-        let navbarContent = `
-          <nav>
-            <ul>
-              <li><button onclick="history.back()">Back</button></li>
-              <li><a href="/html/stalls/stalls.html">Stalls</a></li>
-        `;
-
-        if (user) {
-          navbarContent += `
-            <li><a href="/html/user/user.html">User Profile</a></li>
-            <li><a href="#" onclick="logout()">Logout</a></li>
-          `;
-          if (user.role === "superAdmin") {
-            navbarContent += `
-              <li><a href="/html/admin/admin.html">Admin</a></li>
-            `;
-          }
-        } else {
-          navbarContent += `
-            <li><a href="/html/auth/login.html">Login</a></li>
-            <li><a href="/html/auth/register.html">Register</a></li>
-          `;
-        }
-
-        navbarContent += `
-            </ul>
-          </nav>
-        `;
-
-        document.getElementById("navbar").innerHTML = navbarContent;
-      });
-
-      function logout() {
-        localStorage.removeItem("user");
-        window.location.href = "/html/auth/login.html";
-      }
+  <body onload="includeHTML()">
+    <div id="navbar" data-include-html="/html/navbar.html"></div>
     </script>
     <div class="container">
       <h1>Stall Details</h1>
@@ -90,6 +51,7 @@
       </div>
       <p><a href="#" onclick="reportMistake()">Spot a mistake?</a></p>
     </div>
+    <div id="footer" data-include-html="/html/footer.html"></div>
     <script>
       function toggleReviewForm() {
         const reviewForm = document.getElementById("review-form");

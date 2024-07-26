@@ -14,6 +14,7 @@ const suggestionRouter = require("./src/routers/suggestion");
 const mapsRouter = require("./src/routers/googleMaps");
 const errorHandler = require("./src/middleware/errorHandler");
 const connectDB = require("./src/db/db");
+const setCORPHeader = require("./src/middleware/setCORPHeader");
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -56,6 +57,13 @@ app.use(
       scriptSrc: ["'self'", "'unsafe-inline'"],
       objectSrc: ["'none'"],
       upgradeInsecureRequests: [],
+      baseUri: ["'self'"],
+      fontSrc: ["'self'", "https:", "data:"],
+      formAction: ["'self'"],
+      frameAncestors: ["'self'"],
+      imgSrc: ["'self'", "data:", "http://127.0.0.1:5001"],
+      scriptSrcAttr: ["'none'"],
+      styleSrc: ["'self'", "https:", "'unsafe-inline'"],
     },
   })
 );
@@ -63,8 +71,19 @@ app.use(limiter);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+app.use(setCORPHeader);
 // Serve static files from frontend directory
 app.use(express.static("frontend"));
+
+// Serve static files from the 'uploads' directory
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "uploads"), {
+    setHeaders: (res) => {
+      res.set("Cross-Origin-Resource-Policy", "cross-origin");
+    },
+  })
+);
 
 // Routes
 app.use("/api/auth", authRouter);
@@ -74,7 +93,6 @@ app.use("/api/user", userRouter);
 app.use("/api/reviews", reviewRouter);
 app.use("/api/suggestions", suggestionRouter);
 app.use("/api/maps", mapsRouter);
-
 // Error Handling
 app.use(errorHandler);
 

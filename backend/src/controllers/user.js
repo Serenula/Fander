@@ -1,5 +1,7 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
+const multer = require("multer");
+const path = require("path");
 
 const getUserProfile = async (req, res) => {
   try {
@@ -77,10 +79,58 @@ const reactivateUserAccount = async (req, res) => {
   }
 };
 
+// Multer for picture uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, req.user._id + path.extname(file.originalname));
+  },
+});
+const upload = multer({ storage: storage });
+
+const uploadProfilePicture = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.profilePictureUrl = `/uploads/${req.file.filename}`;
+    await user.save();
+
+    res.json({ profilePictureUrl: user.profilePictureUrl });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+const deleteProfilePicture = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.profilePictureUrl = undefined;
+    await user.save();
+
+    res.json({ message: "Profile picture deleted" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 module.exports = {
   getUserProfile,
   updateUserProfile,
   changePassword,
   deactivateUserAccount,
   reactivateUserAccount,
+  uploadProfilePicture,
+  deleteProfilePicture,
+  upload,
 };
