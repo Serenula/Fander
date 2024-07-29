@@ -7,6 +7,8 @@ const path = require("path");
 const connectDB = require("./src/config/databse");
 const corsOptions = require("./src/config/cors");
 const errorHandler = require("./src/middleware/errorHandler");
+
+//Routers
 const authRouter = require("./src/routers/auth");
 const userRouter = require("./src/routers/user");
 const stallRouter = require("./src/routers/stall");
@@ -14,12 +16,7 @@ const adminRouter = require("./src/routers/admin");
 const reviewRouter = require("./src/routers/review");
 const suggestionRouter = require("./src/routers/suggestion");
 const mapsRouter = require("./src/routers/googleMaps");
-const upload = require("./services/gridfsStorage");
-const {
-  uploadProfilePicture,
-  getFileByFilename,
-  deleteFile,
-} = require("./services/fileHandler");
+const uploadRouter = require("./src/routers/upload");
 
 connectDB();
 
@@ -57,14 +54,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Routes
-app.post(
-  "/api/user/profile-picture",
-  upload.single("profilePicture"),
-  uploadProfilePicture
-);
-app.get("/uploads/:filename", getFileByFilename);
-app.delete("/uploads/:filename", deleteFile);
-
 app.use("/api/auth", authRouter);
 app.use("/api/stalls", stallRouter);
 app.use("/api/admins", adminRouter);
@@ -72,6 +61,7 @@ app.use("/api/user", userRouter);
 app.use("/api/reviews", reviewRouter);
 app.use("/api/suggestions", suggestionRouter);
 app.use("/api/maps", mapsRouter);
+app.use("/api/uploads", uploadRouter);
 
 // Error Handling
 app.use(errorHandler);

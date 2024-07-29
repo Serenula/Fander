@@ -8,9 +8,9 @@ const {
   reactivateUserAccount,
   uploadProfilePicture,
   deleteProfilePicture,
-  upload,
 } = require("../controllers/user");
 const auth = require("../middleware/auth");
+const upload = require("../../services/gridfsStorage");
 
 router.get("/profile", auth, getUserProfile);
 router.put("/edit", auth, updateUserProfile);
