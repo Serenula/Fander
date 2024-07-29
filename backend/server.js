@@ -53,6 +53,9 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Serve static files from frontend directory
+app.use(express.static("frontend"));
+
 // Routes
 app.use("/api/auth", authRouter);
 app.use("/api/stalls", stallRouter);

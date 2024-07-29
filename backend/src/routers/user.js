@@ -12,7 +12,9 @@ const {
 const auth = require("../middleware/auth");
 const upload = require("../../services/gridfsStorage");
 
-router.get("/profile", auth, getUserProfile);
+const setCORPHeader = require("../middleware/setCORPHeader");
+
+router.get("/profile", auth, setCORPHeader, getUserProfile);
 router.put("/edit", auth, updateUserProfile);
 router.put("/change-password", auth, changePassword);
 router.put("/deactivate", auth, deactivateUserAccount);

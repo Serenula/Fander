@@ -81,18 +81,23 @@ const deleteProfilePicture = async (req, res) => {
     // Extract filename from profilePictureUrl
     const filename = user.profilePictureUrl.split("/").pop();
 
-    // Delete file from GridFS
-    try {
-      await gridfsBucket.delete(new mongoose.Types.ObjectId(filename));
-      user.profilePictureUrl = undefined;
-      await user.save();
-      res.json({ msg: "File deleted successfully" });
-    } catch (err) {
-      console.error("Error deleting file:", err);
-      return res.status(404).json({ err });
+    // Find the file by filename
+    const file = await gfs.files.findOne({ filename });
+
+    if (!file) {
+      return res.status(404).json({ message: "File not found" });
     }
+
+    // Delete the file from GridFS
+    await gridfsBucket.delete(file._id);
+
+    // Update user's profile picture URL
+    user.profilePictureUrl = undefined;
+    await user.save();
+
+    res.json({ message: "File deleted successfully" });
   } catch (error) {
-    console.error(error);
+    console.error("Error deleting file:", error);
     res.status(500).json({ message: "Server error" });
   }
 };

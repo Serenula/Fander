@@ -129,7 +129,7 @@
                 if (data.profilePictureUrl) {
                   document.getElementById(
                     "profile-picture"
-                  ).src = `http://127.0.0.1:5001${data.profilePictureUrl}`;
+                  ).src = `http://127.0.0.1:5001/api${data.profilePictureUrl}`;
                 }
               } else {
                 console.error("Invalid user data:", data);
