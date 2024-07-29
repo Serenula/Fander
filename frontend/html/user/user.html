@@ -13,101 +13,104 @@
   </head>
   <body onload="includeHTML()">
     <header>
-      <img src="logo.png" alt="Logo" />
       <div id="navbar" data-include-html="/html/navbar.html"></div>
     </header>
 
-    <div class="profile-container">
-      <img
-        id="profile-picture"
-        src=""
-        alt="Profile Picture"
-        class="profile-picture"
-      />
+    <main>
+      <div class="profile-container">
+        <img
+          id="profile-picture"
+          src=""
+          alt="Profile Picture"
+          class="profile-picture"
+        />
 
-      <input
-        type="file"
-        id="profile-picture-input"
-        style="display: none"
-        onchange="uploadProfilePicture(event)"
-      />
-      <button
-        class="upload-button"
-        onclick="document.getElementById('profile-picture-input').click();"
-      >
-        Upload Picture
-      </button>
-      <button class="delete-button" onclick="deleteProfilePicture()">
-        Delete Picture
-      </button>
-      <h1 id="user-name"></h1>
-      <p id="user-email"></p>
-      <button class="edit-button" onclick="toggleEditProfile()">
-        Edit Account
-      </button>
-      <button class="change-password-button" onclick="toggleChangePassword()">
-        Change Password
-      </button>
-    </div>
-
-    <div id="edit-profile" style="display: none">
-      <h2>Edit Profile</h2>
-      <form
-        id="edit-profile-form"
-        hx-put="/user/edit"
-        hx-target="#user-profile"
-        hx-swap="innerHTML"
-      >
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" /><br /><br />
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" /><br /><br />
-        <button type="submit">Update Profile</button>
-      </form>
-    </div>
-
-    <div id="change-password" style="display: none">
-      <h2>Change Password</h2>
-      <form
-        id="change-password-form"
-        hx-put="/user/change-password"
-        hx-target="#user-profile"
-        hx-swap="innerHTML"
-      >
-        <label for="current-password">Current Password:</label>
         <input
-          type="password"
-          id="current-password"
-          name="current-password"
-        /><br /><br />
-        <label for="new-password">New Password:</label>
-        <input
-          type="password"
-          id="new-password"
-          name="new-password"
-        /><br /><br />
-        <label for="confirm-password">Confirm Password:</label>
-        <input
-          type="password"
-          id="confirm-password"
-          name="confirm-password"
-        /><br /><br />
-        <button type="submit">Change Password</button>
-      </form>
-    </div>
+          type="file"
+          id="profile-picture-input"
+          style="display: none"
+          onchange="uploadProfilePicture(event)"
+        />
+        <button
+          class="upload-button"
+          onclick="document.getElementById('profile-picture-input').click();"
+        >
+          Upload Picture
+        </button>
+        <button class="delete-button" onclick="deleteProfilePicture()">
+          Delete Picture
+        </button>
+        <h1 id="user-name"></h1>
+        <p id="user-email"></p>
+        <button class="edit-button" onclick="toggleEditProfile()">
+          Edit Account
+        </button>
+        <button class="change-password-button" onclick="toggleChangePassword()">
+          Change Password
+        </button>
+      </div>
 
-    <div class="menu">
-      <a href="/html/legal/faqs.html">FAQs</a>
-      <a href="https://forms.gle/feedbackFormLink">Feedback</a>
-      <a href="/html/legal/contactus.html">Contact Us</a>
-      <a href="/html/legal/termsofuse.html">Terms of Use</a>
-      <a href="/html/legal/privacypolicy.html">Privacy Policy</a>
-      <a href="https://forms.gle/jv5Dn4ALpJUfpc4W9" class="submit-new-stall">
-        Submit New Stall
-      </a>
-    </div>
+      <div id="edit-profile" style="display: none">
+        <h2>Edit Profile</h2>
+        <form
+          id="edit-profile-form"
+          hx-put="/user/edit"
+          hx-target="#user-profile"
+          hx-swap="innerHTML"
+        >
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" /><br /><br />
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" /><br /><br />
+          <button type="submit">Update Profile</button>
+        </form>
+      </div>
 
-    <div id="footer" data-include-html="/html/footer.html"></div>
+      <div id="change-password" style="display: none">
+        <h2>Change Password</h2>
+        <form
+          id="change-password-form"
+          hx-put="/user/change-password"
+          hx-target="#user-profile"
+          hx-swap="innerHTML"
+        >
+          <label for="current-password">Current Password:</label>
+          <input
+            type="password"
+            id="current-password"
+            name="current-password"
+          /><br /><br />
+          <label for="new-password">New Password:</label>
+          <input
+            type="password"
+            id="new-password"
+            name="new-password"
+          /><br /><br />
+          <label for="confirm-password">Confirm Password:</label>
+          <input
+            type="password"
+            id="confirm-password"
+            name="confirm-password"
+          /><br /><br />
+          <button type="submit">Change Password</button>
+        </form>
+      </div>
+
+      <div class="menu">
+        <a href="/html/legal/faqs.html">FAQs</a>
+        <a href="https://forms.gle/feedbackFormLink">Feedback</a>
+        <a href="/html/legal/contactus.html">Contact Us</a>
+        <a href="/html/legal/termsofuse.html">Terms of Use</a>
+        <a href="/html/legal/privacypolicy.html">Privacy Policy</a>
+        <a href="https://forms.gle/jv5Dn4ALpJUfpc4W9" class="submit-new-stall">
+          Submit New Stall
+        </a>
+      </div>
+    </main>
+
+    <footer>
+      <div id="footer" data-include-html="/html/footer.html"></div>
+    </footer>
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {

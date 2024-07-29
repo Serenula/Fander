@@ -1,3 +1,11 @@
+/* Reset styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Basic styling */
 body {
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;
@@ -68,6 +76,8 @@ button:hover {
 .menu {
   background-color: #eee;
   padding: 20px;
+  margin: 20px auto;
+  width: 80%;
 }
 
 .menu a {
@@ -83,13 +93,6 @@ button:hover {
 
 .submit-new-stall {
   font-weight: bold;
-}
-
-footer {
-  text-align: center;
-  padding: 20px;
-  background-color: #fff;
-  border-top: 1px solid #ddd;
 }
 
 #edit-profile,

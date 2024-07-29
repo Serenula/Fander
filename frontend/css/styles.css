@@ -9,6 +9,14 @@
 body {
   font-family: Arial, sans-serif;
   line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Main content styling */
+main {
+  flex: 1;
   padding: 20px;
 }
 
@@ -56,19 +64,23 @@ a:hover {
 nav {
   background-color: #333;
   overflow: hidden;
+  padding: 0 20px; /* Add padding to give space inside the navbar */
 }
 
 nav ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
+  display: flex;
+  align-items: center;
 }
 
 nav ul li {
-  float: left;
+  margin-right: 20px; /* Adjust margin between items */
 }
 
-nav ul li a {
+nav ul li a,
+nav ul li button {
   display: block;
   color: white;
   text-align: center;
@@ -76,15 +88,27 @@ nav ul li a {
   text-decoration: none;
 }
 
-nav ul li a:hover {
+nav ul li a:hover,
+nav ul li button:hover {
   background-color: #111;
 }
 
-/* Clear floats after the nav ul */
-nav ul::after {
-  content: "";
-  clear: both;
-  display: table;
+nav .nav-logo {
+  height: 40px;
+  margin-right: 20px;
+}
+
+nav ul li button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-size: 16px;
+  padding: 14px 16px; /* Ensure the padding is applied to buttons as well */
+}
+
+nav ul li button:hover {
+  background-color: #111;
 }
 
 /* Footer Styling */
@@ -93,105 +117,12 @@ footer {
   padding: 20px;
   text-align: center;
   border-top: 1px solid #ddd;
-  position: fixed;
-  left: 0;
-  bottom: 0;
   width: 100%;
   box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  bottom: 0;
 }
 
 footer p {
   margin: 0;
-}
-
-/* Profile Page Styling */
-.profile-container {
-  text-align: center;
-  margin: 20px;
-}
-
-.profile-picture {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  margin-bottom: 20px;
-}
-
-.profile-container h1,
-.profile-container p {
-  margin: 10px 0;
-}
-
-.edit-button,
-.change-password-button,
-.upload-button,
-.delete-button {
-  display: block;
-  width: 200px;
-  padding: 10px;
-  margin: 10px auto;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: #28a745;
-  color: white;
-  cursor: pointer;
-  text-align: center;
-}
-
-.edit-button:hover,
-.change-password-button:hover,
-.upload-button:hover,
-.delete-button:hover {
-  background-color: #218838;
-}
-
-/* Edit Profile and Change Password Forms */
-#edit-profile,
-#change-password {
-  max-width: 600px;
-  margin: 20px auto;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 20px;
-}
-
-#edit-profile h2,
-#change-password h2 {
-  text-align: center;
-  color: #333;
-}
-
-label {
-  display: block;
-  margin-bottom: 5px;
-  color: #555;
-}
-
-input[type="text"],
-input[type="email"],
-input[type="password"],
-button {
-  width: calc(100% - 20px);
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-
-button {
-  background-color: #28a745;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #218838;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
 }
