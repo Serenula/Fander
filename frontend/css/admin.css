@@ -1,27 +1,6 @@
-/* Admin Page Styling */
 body {
   font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-  margin: 0;
-  padding: 0;
-}
-
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  background-color: #fff;
-  border-bottom: 1px solid #ddd;
-}
-
-header img {
-  height: 40px;
-}
-
-.menu-icon {
-  font-size: 24px;
-  cursor: pointer;
+  margin-bottom: 60px;
 }
 
 main {

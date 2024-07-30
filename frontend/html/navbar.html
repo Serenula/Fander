@@ -1,17 +1,15 @@
 <nav>
   <ul>
-    <li><img src="logo.png" alt="Logo" class="nav-logo" /></li>
+    <li><img src="/backend/Image/Fander.png" alt="Logo" class="nav-logo" /></li>
     <li><button onclick="history.back()">Back</button></li>
     <li><a href="/html/stalls/stalls.html">Stalls</a></li>
-    <li><a href="/html/user/user.html">User Profile</a></li>
-    <li><a href="#" onclick="logout()">Logout</a></li>
-    <span id="user-nav"></span>
+    <li id="user-nav-container"></li>
   </ul>
 </nav>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const user = JSON.parse(localStorage.getItem("user"));
-    let userNavContent = ``;
+    let userNavContent = "";
 
     if (user) {
       userNavContent += `
@@ -20,7 +18,7 @@
         `;
       if (user.role === "superAdmin") {
         userNavContent += `
-            <li><a href="/html/admin/admin.html">Admin</a></li>
+            <li><a href="/html/administration/admin.html">Admin</a></li>
           `;
       }
     } else {
@@ -30,11 +28,11 @@
         `;
     }
 
-    document.getElementById("user-nav").innerHTML = userNavContent;
+    document.getElementById("user-nav-container").innerHTML = userNavContent;
   });
 
   function logout() {
     localStorage.removeItem("user");
-    window.location.href = "/html/auth/login.html";
+    window.location.href = "/auth/login.html";
   }
 </script>
