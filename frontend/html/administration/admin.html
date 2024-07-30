@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Stall</title>
+    <link rel="stylesheet" href="../../css/styles.css" />
+    <link rel="stylesheet" href="../../css/admin.css" />
+    <script src="../../js/config.js"></script>
+    <script src="../../node_modules/htmx.org/dist/htmx.js"></script>
+    <script src="../../js/adminCheck.js"></script>
+    <script src="../../js/include.js"></script>
+  </head>
+  <body onload="includeHTML()">
+    <header>
+      <div id="navbar" data-include-html="/html/navbar.html"></div>
+    </header>
+
+    <main>
+      <h1>Create Stall</h1>
+      <div id="create-stall">
+        <form id="create-stall-form" onsubmit="createStall(event)">
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" required /><br /><br />
+
+          <label for="address">Address:</label>
+          <input type="text" id="address" name="address" required /><br /><br />
+
+          <label for="hours">Operating Hours:</label>
+          <input type="text" id="hours" name="hours" required /><br /><br />
+
+          <label for="meat">Meat:</label>
+          <input type="number" id="meat" name="meat" required /><br /><br />
+
+          <label for="vegetable">Vegetable:</label>
+          <input
+            type="number"
+            id="vegetable"
+            name="vegetable"
+            required
+          /><br /><br />
+
+          <label for="fish">Fish:</label>
+          <input type="number" id="fish" name="fish" required /><br /><br />
+
+          <label for="misc">Misc:</label>
+          <input type="number" id="misc" name="misc" /><br /><br />
+
+          <button type="submit">Create Stall</button>
+        </form>
+      </div>
+    </main>
+
+    <footer>
+      <div id="footer" data-include-html="/html/footer.html"></div>
+    </footer>
+
+    <script>
+      function fetchGeocode(address) {
+        return fetch(
+          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+            address
+          )}&key=${apiKey}`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "OK") {
+              return data.results[0].geometry.location;
+            } else {
+              throw new Error(data.status);
+            }
+          });
+      }
+
+      function createStall(event) {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+        const data = {};
+        formData.forEach((value, key) => (data[key] = value));
+
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.accessToken) {
+          console.error("No access token found in LocalStorage");
+          return;
+        }
+
+        fetchGeocode(data.address)
+          .then((location) => {
+            data.location = location;
+            fetch("http://127.0.0.1:5001/api/stalls/create", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${user.accessToken}`,
+              },
+              body: JSON.stringify(data),
+            })
+              .then((response) => response.json())
+              .then((stall) => {
+                window.location.href = "/html/stalls/stalls.html";
+              })
+              .catch((error) => console.error("Error creating stall:", error));
+          })
+          .catch((error) => console.error("Error fetching geocode:", error));
+      }
+    </script>
+  </body>
+</html>

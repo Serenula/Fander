@@ -1,5 +1,6 @@
 body {
   font-family: Arial, sans-serif;
+  margin-bottom: 60px;
 }
 
 h1 {
@@ -59,8 +60,6 @@ button:hover {
   border-radius: 4px;
   padding: 16px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  flex: 1 1 calc(33.333% - 32px);
-  max-width: calc(33.333% - 32px);
 }
 
 .stall-card h3 {

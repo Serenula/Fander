@@ -1,8 +1,10 @@
+/* Basic styling */
 body {
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;
-  margin: 0;
+  margin-bottom: 60px;
   padding: 0;
+  line-height: 1.6;
 }
 
 h1,
@@ -20,15 +22,27 @@ h2 {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+p {
+  margin: 10px 0;
+}
+
+/* Stall Image Styling */
 .stall-image {
+  display: block;
+  margin: 0 auto 20px auto;
   width: 100%;
   height: auto;
   border-radius: 8px;
-  margin-bottom: 20px;
 }
 
-p {
+/* Address and Operating Hours */
+.stall-details p {
   margin: 10px 0;
+}
+
+/* Reviews Section */
+.reviews {
+  margin-top: 30px;
 }
 
 .review {
@@ -58,8 +72,9 @@ p {
   margin-bottom: 10px;
 }
 
+/* Buttons */
 button {
-  background-color: #28a745;
+  background-color: #add8e6; /* Light blue */
   color: white;
   border: none;
   padding: 10px 20px;
@@ -69,7 +84,7 @@ button {
 }
 
 button:hover {
-  background-color: #218838;
+  background-color: #85c1e9;
 }
 
 button:disabled {
@@ -90,6 +105,7 @@ textarea {
   display: none;
 }
 
+/* Form Group Styling */
 .form-group {
   margin-bottom: 15px;
 }
@@ -111,4 +127,46 @@ textarea {
 .form-group button {
   width: 100%;
   padding: 10px;
+}
+
+/* Spot a mistake link */
+a.spot-mistake {
+  font-weight: bold;
+  color: black;
+  text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .stall-image {
+    width: 100%;
+  }
+
+  .container {
+    padding: 10px;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .container {
+    padding: 20px;
+  }
+}
+
+/* Carousel for Mobile View */
+@media (max-width: 768px) {
+  .stall-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+
+  /* Add carousel styles here if using a library like Slick or Swiper */
 }

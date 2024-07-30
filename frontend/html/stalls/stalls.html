@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Stalls</title>
     <link rel="stylesheet" href="../../css/styles.css" />
+    <link rel="stylesheet" href="../../css/stalls.css" />
     <script src="../../js/config.js"></script>
     <script src="../../node_modules/htmx.org/dist/htmx.js"></script>
     <script src="../../js/adminCheck.js"></script>
+    <script src="../../js/include.js"></script>
     <script>
       // Fetch the Google Maps API key from the server
       let apiKey = "";
@@ -23,7 +25,7 @@
         })
         .catch((error) => console.error("Error fetching API key:", error));
 
-        function fetchGeocode(address) {
+      function fetchGeocode(address) {
         return fetch(
           `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
             address
@@ -39,7 +41,6 @@
           });
       }
     </script>
-   <script src="../../js/include.js"></script>
   </head>
   <body onload="includeHTML()">
     <div id="navbar" data-include-html="/html/navbar.html"></div>
@@ -50,7 +51,8 @@
         type="text"
         id="search"
         placeholder="Search for stalls"
-        onkeydown="if (event.key === 'Enter') searchStalls()" />
+        onkeydown="if (event.key === 'Enter') searchStalls()"
+      />
     </div>
     <button onclick="searchStalls()">Search</button>
     <button onclick="findNearbyStalls()">Find Nearby Stalls</button>
@@ -63,40 +65,6 @@
       hx-trigger="load"
       hx-target="#stall-list"
     ></div>
-
-    <!-- Create stall form for superadmin -->
-    <div id="create-stall" style="display: none">
-      <h2>Create Stall</h2>
-      <from id="create-stall-form" onsubmit="createStall(event)">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required /><br /><br />
-
-        <label for="address">Address:</label>
-        <input type="text" id="address" name="address" required /><br /><br />
-
-        <label for="hours">Operating Hours:</label>
-        <input type="text" id="hours" name="hours" required /><br /><br />
-
-        <label for="meat">Meat:</label>
-        <input type="number" id="meat" name="meat" required /><br /><br />
-
-        <label for="vegetable">Vegetable:</label>
-        <input
-          type="number"
-          id="vegetable"
-          name="vegetable"
-          required
-        /><br /><br />
-
-        <label for="fish">Fish:</label>
-        <input type="number" id="fish" name="fish" required /><br /><br />
-
-        <label for="misc">Misc:</label>
-        <input type="number" id="misc" name="misc" /><br /><br />
-
-        <button type="submit">Create Stall</button>
-      </form>
-    </div>
 
     <!-- Stall details -->
     <div id="stall-details" style="display: none">
@@ -141,7 +109,11 @@
             <h3>${stall.name}</h3>
             <p><strong>Address:</strong> ${stall.address}</p>
             <p><strong>Operating Hours:</strong> ${stall.hours}</p>
-            <p><strong>Average Rating:</strong> ${stall.averageRating ? stall.averageRating.toFixed(1) : "No ratings yet"}</p>
+            <p><strong>Average Rating:</strong> ${
+              stall.averageRating
+                ? stall.averageRating.toFixed(1)
+                : "No ratings yet"
+            }</p>
             <button onclick="viewStallDetails('${
               stall._id
             }')">View Details</button>
@@ -191,69 +163,40 @@
       }
 
       // Initial fetch of stalls
-      function searchStalls(){
-        const searchQuery = document.getElementById("search").value
-        if(searchQuery){
-          htmx.ajax('GET', `http://127.0.0.1:5001/api/stalls/search?query=${encodeURIComponent(searchQuery)}`,'#stall-list')
+      function searchStalls() {
+        const searchQuery = document.getElementById("search").value;
+        if (searchQuery) {
+          htmx.ajax(
+            "GET",
+            `http://127.0.0.1:5001/api/stalls/search?query=${encodeURIComponent(
+              searchQuery
+            )}`,
+            "#stall-list"
+          );
         }
       }
 
       //Geolocation for nearby stalls
-      function findNearbyStalls(){
-        if(navigator.geolocation){
-          navigator.geolocation.getCurrentPosition((position)=>{
-            const {latitude, longitude} = position.coords;
-            const distance = 5; // in km
-            htmx.ajax(
-              'GET',
-              `http://127.0.0.1:5001/api/stalls/nearby?lat=${latitude}&lng=${longitude}&distance=${distance}`,
-              {target:'#stall-list'}
-            )
-          },
-          (error) =>{
-            console.error("Error getting user location:", error)
-          }
-        )
-        }else{
-          console.error("Geolocation is not supported by this browser")
-        }
-      }
-
-      function createStall(event){
-        event.preventDefault()
-        const form = event.target
-        const formData = new FormData(form)
-        const data = {}
-        formData.forEach((value, key)=>(data[key]=value))
-
-        const user = JSON.parse.localStorage.getItem("user")
-        if (!user || !user.accessToken) {
-          console.error("No access token found in LocalStorage")
-          return;
-        }
-
-        fetchGeocode(data.address)
-        .then((location)=>{ 
-          data.location = location
-          fetch ("http://127.0.0.1:5001/api/stalls/create",{
-            method:"POST",
-            headers:{
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${user.accessToken}`,
+      function findNearbyStalls() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const { latitude, longitude } = position.coords;
+              const distance = 5; // in km
+              htmx.ajax(
+                "GET",
+                `http://127.0.0.1:5001/api/stalls/nearby?lat=${latitude}&lng=${longitude}&distance=${distance}`,
+                { target: "#stall-list" }
+              );
             },
-            body: JSON.stringify(data),
-          })
-          .then((response) => response.json())
-          .then((stall) => {
-            htmx.trigger("#stall-list","load")
-          })
-          .catch((error)=> console.error("Error creating stall:", error))
-        })
-        .catch((error)=>console.error("Error fetching geocode:", error))
+            (error) => {
+              console.error("Error getting user location:", error);
+            }
+          );
+        } else {
+          console.error("Geolocation is not supported by this browser");
+        }
       }
-
-
-    
     </script>
   </body>
 </html>
