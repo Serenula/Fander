@@ -24,6 +24,7 @@ const storage = new GridFsStorage({
   },
 });
 
-const upload = multer({ storage });
+const uploadSingle = multer({ storage }).single("profilePicture"); // Single picture
+const uploadMultiple = multer({ storage }).array("images", 10); // Multiple pictures
 
-module.exports = upload;
+module.exports = { uploadMultiple, uploadSingle };

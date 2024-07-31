@@ -4,19 +4,15 @@ const {
   getFileByFilename,
   deleteFile,
 } = require("../../services/fileHandler");
-const upload = require("../../services/gridfsStorage");
+
 const auth = require("../middleware/auth");
 const setCORPHeader = require("../middleware/setCORPHeader");
+const { uploadSingle } = require("../../services/gridfsStorage");
 
 const router = express.Router();
 
 // Upload profile picture
-router.post(
-  "/upload",
-  auth,
-  upload.single("profilePicture"),
-  uploadProfilePicture
-);
+router.post("/upload", auth, uploadSingle, uploadProfilePicture);
 
 // Get file by filename
 router.get("/:filename", setCORPHeader, getFileByFilename);

@@ -21,9 +21,11 @@ const getGeocode = async (address) => {
 
 const createStall = async (req, res) => {
   const { name, address, hours, meat, vegetable, fish, misc } = req.body;
-
   try {
     const geoLocation = await getGeocode(address); // converts address to geolocation
+    const images = req.files
+      ? req.files.map((file) => `/uploads/${file.filename}`)
+      : []; // upload multiple images
 
     const newStall = new Stall({
       name,
@@ -37,6 +39,7 @@ const createStall = async (req, res) => {
       vegetable,
       fish,
       misc,
+      images,
     });
     await newStall.save();
     res.status(201).json(newStall);
@@ -77,6 +80,7 @@ const getAllStalls = async (req, res) => {
 
 const updateStall = async (req, res) => {
   const { name, address, hours, meat, vegetable, fish, misc } = req.body;
+  const images = req.files ? req.files.map((file) => file.filename) : [];
 
   try {
     const updatedStall = await Stall.findByIdAndUpdate(
@@ -93,6 +97,7 @@ const updateStall = async (req, res) => {
         vegetable,
         fish,
         misc,
+        images,
       },
       { new: true }
     );

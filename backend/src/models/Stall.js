@@ -41,6 +41,12 @@ const stallSchema = new mongoose.Schema(
       type: Number,
       required: false,
     },
+    images: [
+      {
+        type: String,
+        required: false,
+      },
+    ],
     reviews: [
       {
         type: mongoose.Schema.Types.ObjectId,

@@ -4,20 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Stall Details</title>
-    <link rel="stylesheet" href="../../css/stallDetails.css" />
     <link rel="stylesheet" href="../../css/styles.css" />
+    <link rel="stylesheet" href="../../css/stallDetails.css" />
     <script src="../../js/config.js"></script>
     <script src="../../node_modules/htmx.org/dist/htmx.js"></script>
     <script src="../../js/include.js"></script>
   </head>
-  <body onload="includeHTML()">
+  <body onload="includeHTML()" class="stall-details-page">
     <div id="navbar" data-include-html="/html/navbar.html"></div>
     <div class="container">
-      <h1>Stall Details</h1>
       <div id="stall-details">
         <!-- Stall details will be loaded here -->
       </div>
-      <p>
+      <p class="spot-mistake-container">
         <a href="#" class="spot-mistake" onclick="reportMistake()"
           >Spot a mistake?</a
         >
@@ -27,7 +26,9 @@
         <div id="reviews-list">
           <!-- Reviews will be loaded here -->
         </div>
-        <button onclick="toggleReviewForm()">Leave a Review</button>
+        <button onclick="toggleReviewForm()" class="leave-review-btn">
+          Leave a Review
+        </button>
         <div id="review-form" style="display: none">
           <h3>Leave a Review</h3>
           <form id="leave-review-form" onsubmit="submitReview(event)">
@@ -93,24 +94,31 @@
           .then((response) => response.json())
           .then((stall) => {
             const stallDetailsDiv = document.getElementById("stall-details");
+            const imageUrls = (stall.images || [])
+              .map(
+                (url) =>
+                  `<img src="http://127.0.0.1:5001/api${url}" alt="${stall.name}" class="stall-image">`
+              )
+              .join("");
+
             stallDetailsDiv.innerHTML = `
-            <img src="${stall.imageUrl}" alt="${
-              stall.name
-            }" class="stall-image">
-            <div class="stall-details">
-              <p><strong>Address:</strong> <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                stall.address
-              )}" target="_blank">${stall.address}</a></p>
-              <p><strong>Operating Hours:</strong> ${stall.hours}</p>
-              <h3>Dishes</h3>
-              <p><strong>Meat:</strong> $${stall.meat}</p>
-              <p><strong>Vegetable:</strong> $${stall.vegetable}</p>
-              <p><strong>Fish:</strong> $${stall.fish}</p>
-              ${
-                stall.misc ? `<p><strong>Misc:</strong> $${stall.misc}</p>` : ""
-              }
-            </div>
-          `;
+        ${imageUrls}
+        <div class="stall-details">
+          <p><strong>Address:</strong> <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+            stall.address
+          )}" target="_blank">${stall.address}</a></p>
+          <p><strong>Operating Hours:</strong> ${stall.hours}</p>
+          <h3>Price-Per-Dish</h3>
+          <p><strong>Meat:</strong> $${stall.meat}</p>
+          <p><strong>Vegetable:</strong> $${stall.vegetable}</p>
+          <p><strong>Fish:</strong> $${stall.fish}</p>
+          ${
+            stall.misc
+              ? `<p><strong>Miscellaneous*:</strong> $${stall.misc}</p>`
+              : ""
+          }
+        </div>
+      `;
             fetchReviews(stallId);
           })
           .catch((error) =>
@@ -143,9 +151,11 @@
                 .map(
                   (review) => `
               <div class="review">
-                <p><strong>Rating:</strong> ${review.rating}</p>
-                <p><strong>Comment:</strong> ${review.comment}</p>
-                <p><strong>By:</strong> ${review.user.name}</p>
+                <div class="review-header">
+                  <p><strong>By:</strong> ${review.user.name}</p>
+                  <p><strong>Rating:</strong> ${review.rating}</p>
+                </div>
+                <p><strong>Comments:</strong> ${review.comment}</p>
                 <p><strong>Likes:</strong> ${review.likes.length}</p>
                 <p><strong>Dislikes:</strong> ${review.dislikes.length}</p>
                 <button onclick="likeReview('${review._id}')">Like</button>
