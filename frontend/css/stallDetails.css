@@ -1,173 +1,107 @@
-/* Namespace to avoid clashes */
-.stall-details-page {
+body {
   font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
   margin-bottom: 60px;
-  padding: 0;
-  line-height: 1.6;
 }
 
-.stall-details-page h1,
-.stall-details-page h2 {
-  text-align: center;
-  color: #333;
-}
-
-.stall-details-page .container {
+.container {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.stall-details-page p {
-  margin: 10px 0;
-}
-
-/* Stall Image Styling */
-.stall-details-page .stall-image {
-  display: block;
-  margin: 0 auto 20px auto;
+.stall-image {
   width: 100%;
-  height: auto;
-  border-radius: 8px;
+  max-height: 400px;
+  object-fit: cover;
+  margin-bottom: 20px;
+  cursor: pointer;
 }
 
-/* Address and Operating Hours */
-.stall-details-page .stall-details p {
-  margin: 10px 0;
-}
-
-/* Reviews Section */
-.stall-details-page .reviews {
-  margin-top: 30px;
-}
-
-.stall-details-page .review {
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  padding: 10px;
-  border-radius: 4px;
-  margin-bottom: 10px;
-}
-
-.stall-details-page .review-header {
+.thumbnail-container {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  margin-bottom: 20px;
 }
 
-.stall-details-page .review-header p {
-  margin: 0;
-}
-
-.stall-details-page .reply {
-  background-color: #e9e9e9;
-  border: 1px solid #ccc;
-  padding: 5px;
-  border-radius: 4px;
-  margin-left: 20px;
-  margin-bottom: 10px;
-}
-
-/* Buttons */
-.stall-details-page button {
-  background-color: #add8e6; /* Light blue */
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  margin: 5px 0;
+.thumbnail-container img {
+  width: 18%;
   cursor: pointer;
-  border-radius: 4px;
+  border: 2px solid transparent;
 }
 
-.stall-details-page button:hover {
-  background-color: #85c1e9;
+.thumbnail-container img:hover,
+.thumbnail-container img.active {
+  border: 2px solid #000;
 }
 
-.stall-details-page button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+.stall-details {
+  text-align: left;
 }
 
-.stall-details-page textarea {
-  width: calc(100% - 20px);
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-sizing: border-box;
+.stall-details p {
+  margin: 5px 0;
 }
 
-.stall-details-page .hidden {
-  display: none;
-}
-
-/* Form Group Styling */
-.stall-details-page .form-group {
-  margin-bottom: 15px;
-}
-
-.stall-details-page .form-group label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-.stall-details-page .form-group input,
-.stall-details-page .form-group textarea {
-  width: calc(100% - 20px);
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-
-.stall-details-page .form-group button {
-  width: 100%;
-  padding: 10px;
-}
-
-/* Spot a mistake link */
-.stall-details-page .spot-mistake-container {
+.spot-mistake-container {
   text-align: center;
+  margin: 20px 0;
 }
 
-.stall-details-page a.spot-mistake {
+.spot-mistake {
   font-weight: bold;
   color: black;
 }
 
-/* Responsive Design */
-@media (max-width: 480px) {
-  .stall-details-page .stall-image {
-    width: 100%;
-  }
-
-  .stall-details-page .container {
-    padding: 10px;
-  }
+.reviews {
+  margin-top: 30px;
 }
 
-@media (min-width: 481px) and (max-width: 768px) {
-  .stall-details-page .container {
-    padding: 15px;
-  }
+.reviews h2 {
+  text-align: left;
 }
 
-@media (min-width: 769px) and (max-width: 1024px) {
-  .stall-details-page .container {
-    padding: 20px;
-  }
+.review {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 10px;
 }
 
-/* Carousel for Mobile View */
-@media (max-width: 768px) {
-  .stall-details-page .stall-image {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    margin-bottom: 20px;
-  }
+.review-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.leave-review-btn {
+  background-color: lightblue;
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+#review-form {
+  margin-top: 20px;
+}
+
+#review-form .form-group {
+  margin-bottom: 10px;
+}
+
+#review-form label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+#review-form input,
+#review-form textarea {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+#review-form button {
+  background-color: lightblue;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
 }

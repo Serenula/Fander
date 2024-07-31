@@ -16,6 +16,9 @@
       <div id="stall-details">
         <!-- Stall details will be loaded here -->
       </div>
+      <div class="thumbnail-container" id="thumbnail-container">
+        <!-- Thumbnail images will be loaded here -->
+      </div>
       <p class="spot-mistake-container">
         <a href="#" class="spot-mistake" onclick="reportMistake()"
           >Spot a mistake?</a
@@ -94,36 +97,64 @@
           .then((response) => response.json())
           .then((stall) => {
             const stallDetailsDiv = document.getElementById("stall-details");
+            const thumbnailContainer = document.getElementById(
+              "thumbnail-container"
+            );
+
+            const mainImageUrl =
+              stall.images && stall.images.length
+                ? `http://127.0.0.1:5001/api${stall.images[0]}`
+                : "";
             const imageUrls = (stall.images || [])
               .map(
-                (url) =>
-                  `<img src="http://127.0.0.1:5001/api${url}" alt="${stall.name}" class="stall-image">`
+                (url, index) =>
+                  `<img src="http://127.0.0.1:5001/api${url}" alt="${
+                    stall.name
+                  }" class="thumbnail ${
+                    index === 0 ? "active" : ""
+                  }" onclick="changeMainImage('${url}', this)">`
               )
               .join("");
 
             stallDetailsDiv.innerHTML = `
-        ${imageUrls}
-        <div class="stall-details">
-          <p><strong>Address:</strong> <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-            stall.address
-          )}" target="_blank">${stall.address}</a></p>
-          <p><strong>Operating Hours:</strong> ${stall.hours}</p>
-          <h3>Price-Per-Dish</h3>
-          <p><strong>Meat:</strong> $${stall.meat}</p>
-          <p><strong>Vegetable:</strong> $${stall.vegetable}</p>
-          <p><strong>Fish:</strong> $${stall.fish}</p>
-          ${
-            stall.misc
-              ? `<p><strong>Miscellaneous*:</strong> $${stall.misc}</p>`
-              : ""
-          }
-        </div>
-      `;
+              <img src="${mainImageUrl}" alt="${
+              stall.name
+            }" id="main-image" class="stall-image">
+            <div id="thumbnail-container" class="thumbnail-container">
+          ${imageUrls}
+          </div>
+              <div class="stall-details">
+                <p><strong>Address:</strong> <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                  stall.address
+                )}" target="_blank">${stall.address}</a></p>
+                <p><strong>Operating Hours:</strong> ${stall.hours}</p>
+                <h3>Price-Per-Dish</h3>
+                <p><strong>Meat:</strong> $${stall.meat}</p>
+                <p><strong>Vegetable:</strong> $${stall.vegetable}</p>
+                <p><strong>Fish:</strong> $${stall.fish}</p>
+                ${
+                  stall.misc
+                    ? `<p><strong>Miscellaneous*:</strong> $${stall.misc}</p>`
+                    : ""
+                }
+              </div>
+            `;
+
             fetchReviews(stallId);
           })
           .catch((error) =>
             console.error("Error fetching stall details:", error)
           );
+      }
+
+      function changeMainImage(url, thumbnailElement) {
+        const mainImage = document.getElementById("main-image");
+        mainImage.src = `http://127.0.0.1:5001/api${url}`;
+
+        document.querySelectorAll(".thumbnail").forEach((thumb) => {
+          thumb.classList.remove("active");
+        });
+        thumbnailElement.classList.add("active");
       }
 
       function fetchReviews(stallId) {

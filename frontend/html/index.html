@@ -10,7 +10,7 @@
       document.addEventListener("DOMContentLoaded", () => {
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user || user.role !== "superAdmin") {
-          window.location.href = "html/auth/login.html";
+          window.location.href = "auth/login.html";
         }
       });
     </script>
