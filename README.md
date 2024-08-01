@@ -5,7 +5,8 @@
 **Landing Page**
 ![Landing Page](/frontend/image/fander_landing.png)
 
-## Technologies Used
+<details>
+<summary>Technologies Used</summary>
 
 - **Frontend**
 
@@ -30,19 +31,24 @@
 
 - **API**
   - Google Maps API for geolocation creation
-
-## Planning
+</details>
+<details>
+<summary>Planning</summary>
 
 **Wireframes**
-![Landing Page](/frontend/image/Webapp_landing.png)
-![User Page](/frontend/image/Webapp_user_page.png)
-![Stalls Page](/frontend/image/Webapp_Stalls.png)
-![Detailed View of Stall](/frontend/image/detailview.png)
+<p align="center">
+  <img src="/frontend/image/Webapp_landing.png" alt="Landing Page" width="20%"/>
+   <img src="/frontend/image/Webapp_user_page.png" alt="User Page" width="20%"/>
+   <img src="/frontend/image/Webapp_Stalls.png" alt="Stalls Page" width="20%"/>
+   <img src="/frontend/image/detailview.png" alt="Detailed View of Stall" width="20%"/>
+</p>
 
 **Planning Board**
 [Public Board](https://github.com/users/Serenula/projects/2).
+</details>
 
-## Getting Started
+<details>
+<summary>Getting Started</summary>
 
 ### Prerequisites
 
@@ -63,8 +69,11 @@ REFRESH TOKEN
 
 - HTMX
   - npm install htmx.org --save
+ 
+</details>
 
-## Technical Info
+<details>
+<summary>Technical Info</summary>
 
 ### App Overview
 
@@ -122,8 +131,10 @@ This section provides an overview of the available API endpoints in the Fander a
 #### File Upload
 
 21. **POST** `/api/uploads` - Upload files using Multer and GridFS
+</details>
 
-## Authentication
+<details>
+<summary>Authentication</summary>
 
 ### Backend Auths
 
@@ -169,8 +180,10 @@ userNavContent += `
 - Super Admin: Access to
   - All the above
   - Special function to Create Admin
+</details>
 
-## My Experience
+<details>
+<summary>My Experience</summary>
 
 **HTMX (CORS and CSP)**
 
@@ -234,8 +247,10 @@ app.use(
   - Install mongodb version 5.9.1
   - Install multer version 1.4.2
   - or npm i multer-gridfs-storage --legacy-peer-deps (But I do not understand this enough)
+</details>
 
-## Next Steps
+<details>
+<summary>Next Steps</summary>
 
 - I do plan to make publish this app and allow the public to use it and truly create a database of all Cai Fan stalls in Singapore
 - I plan to work with more seasoned developers to help me add in modern features such as
@@ -243,3 +258,4 @@ app.use(
   - Google review connection
 - Other things to work on will be obviously making things prettier
 - Perhaps my code is stupid too but thats about it.
+  </details>
