@@ -1,0 +1,92 @@
+/* Namespace to avoid clashes */
+.admin-page {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  padding: 20px;
+  line-height: 1.6;
+  margin-top: 40px;
+  margin-bottom: 60px;
+}
+.admin-page main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.admin-page h1 {
+  text-align: center;
+  color: #333;
+}
+
+.admin-page form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-page label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.admin-page input[type="text"],
+.admin-page input[type="number"],
+.admin-page input[type="file"] {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.admin-page button {
+  background-color: #ff9b62;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+.admin-page button:hover {
+  background-color: #e5834b;
+}
+
+.user-item,
+.stall-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  white-space: nowrap; /* Prevent overflow */
+  overflow: hidden; /* Hide overflow */
+  text-overflow: ellipsis; /* Add ellipsis for overflow text */
+}
+
+.user-item span,
+.stall-item span {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+.user-item button,
+.stall-item button {
+  background-color: #ff9b62;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.user-item button:hover,
+.stall-item button:hover {
+  background-color: #e5834b;
+}

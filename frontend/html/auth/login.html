@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="stylesheet" href="../../css/landing.css" />
+    <script src="../../js/config.js"></script>
+    <script src="../../node_modules/htmx.org/dist/htmx.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="logo-container">
+        <img src="../../image/Fander_Logo.png" alt="Fander Logo" class="logo" />
+      </div>
+      <div class="form-container">
+        <h2>Login</h2>
+        <form
+          id="admin-login-form"
+          hx-post="/auth/login"
+          hx-target="#login-results"
+          hx-swap="innerHTML"
+          hx-on="htmx:afterRequest"
+          hx-trigger="submit from:body"
+        >
+          <label for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="name@example.com"
+            required
+          />
+
+          <label for="password">Password</label>
+          <div class="password-field">
+            <input type="password" id="password" name="password" required />
+            <br />
+            <input
+              type="checkbox"
+              id="show-password"
+              onchange="togglePasswordVisibility()"
+            />
+            <label for="show-password">Show password</label>
+          </div>
+
+          <div class="note">
+            We do not store any data related to your social logins
+          </div>
+
+          <button type="submit">Login</button>
+        </form>
+        <div class="terms">
+          BY CREATING AN ACCOUNT WITH XXX, YOU AGREE TO THE PRIVACY POLICY AND
+          TO THE TERMS OF USE.
+        </div>
+        <div class="login-link">
+          Don't have an account? <a href="register.html">Register now!</a>
+        </div>
+      </div>
+      <div id="login-results"></div>
+    </div>
+    <footer>Copyright xxx, all rights reserved</footer>
+
+    <script>
+      function togglePasswordVisibility() {
+        const passwordField = document.getElementById("password");
+        const checkbox = document.getElementById("show-password");
+
+        if (checkbox.checked) {
+          passwordField.type = "text";
+        } else {
+          passwordField.type = "password";
+        }
+      }
+
+      document.body.addEventListener("htmx:afterRequest", function (evt) {
+        if (evt.detail.successful) {
+          const response = evt.detail.xhr.response;
+          const data = JSON.parse(response);
+          if (data.message) {
+            document.getElementById("login-results").innerHTML = data.message;
+          }
+          if (
+            data.user &&
+            (data.user.role === "admin" || data.user.role === "superAdmin")
+          ) {
+            // Store user data and tokens in local storage
+            localStorage.setItem(
+              "user",
+              JSON.stringify({
+                id: data.user.id,
+                name: data.user.name,
+                email: data.user.email,
+                role: data.user.role,
+                accessToken: data.accessToken,
+                refreshToken: data.refreshToken,
+              })
+            );
+            window.location.href = "/html/administration/admin.html";
+          }
+          if (data.user && data.user.role === "user") {
+            localStorage.setItem(
+              "user",
+              JSON.stringify({
+                id: data.user.id,
+                name: data.user.name,
+                email: data.user.email,
+                role: data.user.role,
+                accessToken: data.accessToken,
+                refreshToken: data.refreshToken,
+              })
+            );
+            window.location.href = "/html/user/user.html";
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

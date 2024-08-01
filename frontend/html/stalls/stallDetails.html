@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stall Details</title>
+    <link rel="stylesheet" href="../../css/styles.css" />
+    <link rel="stylesheet" href="../../css/stallDetails.css" />
+    <script src="../../js/config.js"></script>
+    <script src="../../node_modules/htmx.org/dist/htmx.js"></script>
+    <script src="../../js/include.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.accessToken) {
+          window.location.href = "../../html/auth/login.html";
+        }
+      });
+    </script>
+  </head>
+  <body class="stall-details-page">
+    <div id="navbar" data-include-html="../navbar.html"></div>
+    <div class="container">
+      <div id="stall-details">
+        <!-- Stall details will be loaded here -->
+      </div>
+      <div class="thumbnail-container" id="thumbnail-container">
+        <!-- Thumbnail images will be loaded here -->
+      </div>
+      <p class="spot-mistake-container">
+        <a href="#" class="spot-mistake" onclick="reportMistake()"
+          >Spot a mistake?</a
+        >
+      </p>
+      <div class="reviews">
+        <h2>Reviews</h2>
+        <div id="reviews-list">
+          <!-- Reviews will be loaded here -->
+        </div>
+        <button onclick="toggleReviewForm()" class="leave-review-btn">
+          Leave a Review
+        </button>
+        <div id="review-form" style="display: none">
+          <h3>Leave a Review</h3>
+          <form id="leave-review-form" onsubmit="submitReview(event)">
+            <input type="hidden" id="stallId" name="stallId" value="" />
+            <div class="form-group">
+              <label for="rating">Rating:</label>
+              <input
+                type="number"
+                id="rating"
+                name="rating"
+                min="1"
+                max="5"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="comment">Comment:</label>
+              <textarea id="comment" name="comment" required></textarea>
+            </div>
+            <div class="form-group">
+              <button type="submit">Submit Review</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleReviewForm() {
+        const reviewForm = document.getElementById("review-form");
+        reviewForm.style.display =
+          reviewForm.style.display === "none" ? "block" : "none";
+      }
+
+      function reportMistake() {
+        alert("Thank you for reporting a mistake. We will look into it.");
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const stallId = urlParams.get("id");
+        if (stallId) {
+          document.getElementById("stallId").value = stallId;
+          fetchStallDetails(stallId);
+        } else {
+          console.error("No stall ID found in URL parameters");
+        }
+        // Update the navbar with user info
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        function updateNavbar() {
+          const navbarContainer = document.getElementById("navbar");
+          if (navbarContainer) {
+            const navUserNavContainer = navbarContainer.querySelector(
+              "#user-nav-container"
+            );
+            if (navUserNavContainer) {
+              let userNavContent = '<ul class="nav-items">';
+
+              if (user && user.accessToken) {
+                userNavContent += `
+    <li><a href="../../html/user/user.html">User Profile</a></li>
+    <li><a href="#" id="logout-link">Logout</a></li>
+  `;
+
+                if (user.role === "superAdmin") {
+                  console.log("User is superAdmin");
+                  userNavContent += `
+      <li><a href="../../html/administration/admin.html">Admin</a></li>
+    `;
+                }
+              } else {
+                userNavContent += `
+    <li><a href="../../html/auth/login.html">Login</a></li>
+    <li><a href="../../html/auth/register.html">Register</a></li>
+  `;
+              }
+
+              userNavContent += "</ul>";
+              navUserNavContainer.innerHTML = userNavContent;
+              console.log("userNavContent added to navbar:", userNavContent);
+
+              const logoutLink =
+                navUserNavContainer.querySelector("#logout-link");
+              if (logoutLink) {
+                logoutLink.addEventListener("click", () => {
+                  console.log("Logout link clicked");
+                  localStorage.removeItem("user");
+                  window.location.href = "../../html/auth/login.html";
+                });
+              }
+            }
+          }
+        }
+
+        // Wait for the includeHTML to finish loading the navbar
+        const observer = new MutationObserver(() => {
+          if (document.getElementById("navbar").innerHTML.trim() !== "") {
+            updateNavbar();
+            observer.disconnect();
+          }
+        });
+        observer.observe(document.getElementById("navbar"), {
+          childList: true,
+        });
+      });
+
+      function fetchStallDetails(stallId) {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.accessToken) {
+          console.error("No access token found in localStorage");
+          return;
+        }
+        fetch(`http://127.0.0.1:5001/api/stalls/${stallId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.accessToken}`,
+          },
+        })
+          .then((response) => response.json())
+          .then((stall) => {
+            const stallDetailsDiv = document.getElementById("stall-details");
+            const thumbnailContainer = document.getElementById(
+              "thumbnail-container"
+            );
+
+            const mainImageUrl =
+              stall.images && stall.images.length
+                ? `http://127.0.0.1:5001/api${stall.images[0]}`
+                : "";
+            const imageUrls = (stall.images || [])
+              .map(
+                (url, index) =>
+                  `<img src="http://127.0.0.1:5001/api${url}" alt="${
+                    stall.name
+                  }" class="thumbnail ${
+                    index === 0 ? "active" : ""
+                  }" onclick="changeMainImage('${url}', this)">`
+              )
+              .join("");
+
+            stallDetailsDiv.innerHTML = `
+              <img src="${mainImageUrl}" alt="${
+              stall.name
+            }" id="main-image" class="stall-image">
+            <div id="thumbnail-container" class="thumbnail-container">
+          ${imageUrls}
+          </div>
+              <div class="stall-details">
+                <p><strong>Address:</strong> <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                  stall.address
+                )}" target="_blank">${stall.address}</a></p>
+                <p><strong>Operating Hours:</strong> ${stall.hours}</p>
+                <h3>Price-Per-Dish</h3>
+                <p><strong>Meat:</strong> $${stall.meat}</p>
+                <p><strong>Vegetable:</strong> $${stall.vegetable}</p>
+                <p><strong>Fish:</strong> $${stall.fish}</p>
+                ${
+                  stall.misc
+                    ? `<p><strong>Miscellaneous*:</strong> $${stall.misc}</p>`
+                    : ""
+                }
+              </div>
+            `;
+
+            fetchReviews(stallId);
+          })
+          .catch((error) =>
+            console.error("Error fetching stall details:", error)
+          );
+      }
+
+      function changeMainImage(url, thumbnailElement) {
+        const mainImage = document.getElementById("main-image");
+        mainImage.src = `http://127.0.0.1:5001/api${url}`;
+
+        document.querySelectorAll(".thumbnail").forEach((thumb) => {
+          thumb.classList.remove("active");
+        });
+        thumbnailElement.classList.add("active");
+      }
+
+      function fetchReviews(stallId) {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.accessToken) {
+          console.error("No access token found in localStorage");
+          return;
+        }
+
+        fetch(`http://127.0.0.1:5001/api/reviews/${stallId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.accessToken}`,
+            "x-refresh-token": user.refreshToken,
+          },
+        })
+          .then((response) => response.json())
+          .then((reviews) => {
+            const reviewsListDiv = document.getElementById("reviews-list");
+            if (reviews.length === 0) {
+              reviewsListDiv.innerHTML = "<p>No reviews</p>";
+            } else {
+              reviewsListDiv.innerHTML = reviews
+                .map(
+                  (review) => `
+              <div class="review">
+                <div class="review-header">
+                  <p><strong>By:</strong> ${review.user.name}</p>
+                  <p><strong>Rating:</strong> ${review.rating}</p>
+                </div>
+                <p><strong>Comments:</strong> ${review.comment}</p>
+                <p><strong>Likes:</strong> ${review.likes.length}</p>
+                <p><strong>Dislikes:</strong> ${review.dislikes.length}</p>
+                <button onclick="likeReview('${review._id}')">Like</button>
+                <button onclick="dislikeReview('${
+                  review._id
+                }')">Dislike</button>
+                <button onclick="toggleReplyForm('${
+                  review._id
+                }')">Reply</button>
+                <div id="reply-form-${review._id}" style="display: none;">
+                  <form onsubmit="submitReply(event, '${review._id}')">
+                    <label for="comment">Comment:</label>
+                    <textarea name="comment" required></textarea><br><br>
+                    <button type="submit">Submit Reply</button>
+                  </form>
+                </div>
+                <div id="replies-${review._id}">
+                  ${review.replies
+                    .map(
+                      (reply) => `
+                    <div class="reply">
+                      <p><strong>${reply.user.name}</strong></p>
+                      <p>${reply.comment}</p>
+                    </div>
+                  `
+                    )
+                    .join("")}
+                </div>
+              </div>
+            `
+                )
+                .join("");
+            }
+          })
+          .catch((error) => console.error("Error fetching reviews:", error));
+      }
+
+      function likeReview(reviewId) {
+        interactWithReview(reviewId, "like");
+      }
+
+      function dislikeReview(reviewId) {
+        interactWithReview(reviewId, "dislike");
+      }
+
+      function interactWithReview(reviewId, action) {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.accessToken) {
+          console.error("No access token found in localStorage");
+          return;
+        }
+        fetch(`http://127.0.0.1:5001/api/reviews/${reviewId}/interact`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.accessToken}`,
+            "x-refresh-token": user.refreshToken,
+          },
+          body: JSON.stringify({ action }),
+        })
+          .then((response) => response.json())
+          .then((review) => {
+            fetchReviews(review.stall);
+          })
+          .catch((error) =>
+            console.error("Error interacting with review:", error)
+          );
+      }
+
+      function toggleReplyForm(reviewId) {
+        const replyForm = document.getElementById(`reply-form-${reviewId}`);
+        replyForm.style.display =
+          replyForm.style.display === "none" ? "block" : "none";
+      }
+
+      function submitReply(event, reviewId) {
+        event.preventDefault();
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.accessToken) {
+          console.error("No access token found in localStorage");
+          return;
+        }
+
+        const formData = new FormData(event.target);
+        const data = {};
+        formData.forEach((value, key) => (data[key] = value));
+
+        fetch(`http://127.0.0.1:5001/api/reviews/${reviewId}/reply`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.accessToken}`,
+            "x-refresh-token": user.refreshToken,
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => response.json())
+          .then((review) => {
+            fetchReviews(review.stall);
+          })
+          .catch((error) => console.error("Error submitting reply:", error));
+      }
+
+      function submitReview(event) {
+        event.preventDefault();
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.accessToken) {
+          console.error("No access token found in localStorage");
+          return;
+        }
+
+        const formData = new FormData(event.target);
+        const data = {};
+        formData.forEach((value, key) => (data[key] = value));
+
+        fetch("http://127.0.0.1:5001/api/reviews/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.accessToken}`,
+            "x-refresh-token": user.refreshToken,
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => response.json())
+          .then((review) => {
+            // Add the new review to the reviews list
+            fetchReviews(data.stallId);
+            toggleReviewForm(); // Hide the review form after submission
+          })
+          .catch((error) => console.error("Error submitting review:", error));
+      }
+    </script>
+    <footer>
+      <div id="footer" data-include-html="../footer.html"></div>
+    </footer>
+  </body>
+</html>

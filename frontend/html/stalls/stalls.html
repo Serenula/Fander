@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stalls</title>
+    <link rel="stylesheet" href="../../css/styles.css" />
+    <link rel="stylesheet" href="../../css/stalls.css" />
+    <script src="../../js/config.js"></script>
+    <script src="../../node_modules/htmx.org/dist/htmx.js"></script>
+    <script src="../../js/adminCheck.js"></script>
+    <script src="../../js/include.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.accessToken) {
+          window.location.href = "../../html/auth/login.html";
+        } else {
+          fetchStalls(); // Fetch stalls on page load
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <header>
+      <div id="navbar" data-include-html="../navbar.html"></div>
+    </header>
+    <main>
+      <div class="container">
+        <input
+          type="text"
+          id="search"
+          placeholder="Search for stalls"
+          onkeydown="if (event.key === 'Enter') searchStalls()"
+          class="search-bar"
+        />
+        <button onclick="searchStalls()">Search</button>
+        <button onclick="findNearbyStalls()">Find Nearby Stalls</button>
+        <div id="stall-list" class="stall-grid"></div>
+      </div>
+    </main>
+    <footer>
+      <div id="footer" data-include-html="../footer.html"></div>
+    </footer>
+
+    <script>
+      // Fetch the Google Maps API key from the server
+      let apiKey = "";
+
+      fetch("http://127.0.0.1:5001/api/maps/apikey")
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.apiKey) {
+            apiKey = data.apiKey;
+          } else {
+            console.error("Failed to load Google Maps API Key");
+          }
+        })
+        .catch((error) => console.error("Error fetching API key:", error));
+
+      function fetchGeocode(address) {
+        return fetch(
+          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+            address
+          )}&key=${apiKey}`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "OK") {
+              return data.results[0].geometry.location;
+            } else {
+              throw new Error(data.status);
+            }
+          });
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        function updateNavbar() {
+          const navbarContainer = document.getElementById("navbar");
+          if (navbarContainer) {
+            const navUserNavContainer = navbarContainer.querySelector(
+              "#user-nav-container"
+            );
+            if (navUserNavContainer) {
+              let userNavContent = '<ul class="nav-items">';
+
+              if (user && user.accessToken) {
+                userNavContent += `
+                  <li><a href="../../html/user/user.html">User Profile</a></li>
+                  <li><a href="#" id="logout-link">Logout</a></li>
+                `;
+
+                if (user.role === "superAdmin") {
+                  console.log("User is superAdmin");
+                  userNavContent += `
+                    <li><a href="../../html/administration/admin.html">Admin</a></li>
+                  `;
+                }
+              } else {
+                userNavContent += `
+                  <li><a href="../../html/auth/login.html">Login</a></li>
+                  <li><a href="../../html/auth/register.html">Register</a></li>
+                `;
+              }
+
+              userNavContent += "</ul>";
+              navUserNavContainer.innerHTML = userNavContent;
+              console.log("userNavContent added to navbar:", userNavContent);
+
+              const logoutLink =
+                navUserNavContainer.querySelector("#logout-link");
+              if (logoutLink) {
+                logoutLink.addEventListener("click", () => {
+                  console.log("Logout link clicked");
+                  localStorage.removeItem("user");
+                  window.location.href = "../../html/auth/login.html";
+                });
+              }
+            }
+          }
+        }
+
+        // Wait for the includeHTML to finish loading the navbar
+        const observer = new MutationObserver(() => {
+          if (document.getElementById("navbar").innerHTML.trim() !== "") {
+            updateNavbar();
+            observer.disconnect();
+          }
+        });
+        observer.observe(document.getElementById("navbar"), {
+          childList: true,
+        });
+      });
+
+      async function fetchStalls() {
+        const user = JSON.parse(localStorage.getItem("user"));
+        try {
+          const response = await fetch("http://127.0.0.1:5001/api/stalls/", {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${user.accessToken}`,
+            },
+          });
+          const stalls = await response.json();
+          console.log("Fetched stalls:", stalls);
+          renderStalls(stalls);
+        } catch (error) {
+          console.error("Error fetching stalls:", error);
+        }
+      }
+
+      function renderStalls(stalls) {
+        const stallList = document.getElementById("stall-list");
+        if (!Array.isArray(stalls)) {
+          console.error("Stalls data is not an array:", stalls);
+          return;
+        }
+        stallList.innerHTML = stalls
+          .map((stall) => {
+            const mainImageUrl =
+              stall.images && stall.images.length
+                ? `http://127.0.0.1:5001/api${stall.images[0]}`
+                : "";
+            return `
+              <div class="stall-card" onclick="viewStallDetails('${
+                stall._id
+              }')">
+                <img src="${mainImageUrl}" alt="${
+              stall.name
+            }" class="stall-image" />
+                <div class="stall-details">
+                  <p><strong>Name:</strong> ${stall.name}</p>
+                  <p><strong>Address:</strong> ${stall.address}</p>
+                  <p><strong>Operating Hours:</strong> ${stall.hours}</p>
+                  <p><strong>Average Rating:</strong> ${
+                    stall.averageRating
+                      ? stall.averageRating.toFixed(1)
+                      : "No ratings yet"
+                  }</p>
+                </div>
+              </div>
+            `;
+          })
+          .join("");
+      }
+
+      function viewStallDetails(stallId) {
+        window.location.href = `/html/stalls/stallDetails.html?id=${stallId}`;
+      }
+
+      function searchStalls() {
+        const searchQuery = document.getElementById("search").value;
+        if (searchQuery) {
+          htmx.ajax(
+            "GET",
+            `http://127.0.0.1:5001/api/stalls/search?query=${encodeURIComponent(
+              searchQuery
+            )}`,
+            "#stall-list"
+          );
+        }
+      }
+
+      function findNearbyStalls() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const { latitude, longitude } = position.coords;
+              const distance = 5; // in km
+              fetch(
+                `http://127.0.0.1:5001/api/stalls/nearby?lat=${latitude}&lng=${longitude}&distance=${distance}`,
+                {
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${user.accessToken}`,
+                  },
+                }
+              )
+                .then((response) => {
+                  if (!response.ok) {
+                    throw new Error(
+                      `Error fetching nearby stalls: ${response.statusText}`
+                    );
+                  }
+                  return response.json();
+                })
+                .then((stalls) => {
+                  console.log("Nearby stalls:", stalls);
+                  renderStalls(stalls);
+                })
+                .catch((error) => {
+                  console.error("Error fetching nearby stalls:", error);
+                });
+            },
+            (error) => {
+              console.error("Error getting user location:", error);
+            }
+          );
+        } else {
+          console.error("Geolocation is not supported by this browser");
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,18 +1,20 @@
 const jwt = require("jsonwebtoken");
 
 const superAdminAuth = (req, res, next) => {
-  if (!("authorization" in req.headers)) {
+  const authorizationHeader = req.headers["authorization"];
+
+  if (!authorizationHeader) {
     return res.status(400).json({ status: "error", message: "No token found" });
   }
 
-  const token = req.headers["authorization"].replace("Bearer", "").trim();
+  const token = authorizationHeader.replace("Bearer", "").trim();
 
   if (!token) {
     return res.status(403).json({ status: "error", message: "Missing token" });
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.ACCESS_SECRET);
     req.user = decoded;
 
     if (req.user.role !== "superAdmin") {

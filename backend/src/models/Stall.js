@@ -10,27 +10,51 @@ const stallSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    dishes: [
-      {
+    hours: {
+      type: String,
+      required: true,
+    },
+    location: {
+      type: {
         type: String,
+        enum: ["Point"],
+        required: true,
       },
-    ],
-    cost: {
+      coordinates: {
+        type: [Number],
+        required: true,
+      },
+    },
+    meat: {
       type: Number,
       required: true,
     },
+    vegetable: {
+      type: Number,
+      required: true,
+    },
+    fish: {
+      type: Number,
+      required: true,
+    },
+    misc: {
+      type: Number,
+      required: false,
+    },
+    images: [
+      {
+        type: String,
+        required: false,
+      },
+    ],
     reviews: [
       {
-        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-        rating: { type: Number, required: true },
-        comment: { type: String },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Review",
       },
     ],
   },
   { timestamps: true }
 );
-
-// Define geospatial index for location field
-stallSchema.index({ location: "2dsphere" });
 
 module.exports = mongoose.model("Stall", stallSchema);

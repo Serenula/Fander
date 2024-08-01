@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Profile</title>
+    <link rel="stylesheet" href="../../css/user.css" />
+    <link rel="stylesheet" href="../../css/styles.css" />
+    <script src="../../js/config.js"></script>
+    <script src="../../node_modules/htmx.org/dist/htmx.js"></script>
+    <script src="../../js/adminCheck.js"></script>
+    <script src="../../js/include.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.accessToken) {
+          window.location.href = "../../html/auth/login.html";
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <header>
+      <div id="navbar" data-include-html="../navbar.html"></div>
+    </header>
+
+    <main>
+      <div class="profile-container">
+        <img
+          id="profile-picture"
+          src=""
+          alt="Profile Picture"
+          class="profile-picture"
+        />
+
+        <input
+          type="file"
+          id="profile-picture-input"
+          style="display: none"
+          onchange="uploadProfilePicture(event)"
+        />
+        <button
+          class="upload-button"
+          onclick="document.getElementById('profile-picture-input').click();"
+        >
+          Upload Picture
+        </button>
+        <button class="delete-button" onclick="deleteProfilePicture()">
+          Delete Picture
+        </button>
+        <h1 id="user-name"></h1>
+        <p id="user-email"></p>
+        <button class="edit-button" onclick="toggleEditProfile()">
+          Edit Account
+        </button>
+        <button class="change-password-button" onclick="toggleChangePassword()">
+          Change Password
+        </button>
+      </div>
+
+      <div id="edit-profile" style="display: none">
+        <h2>Edit Profile</h2>
+        <form
+          id="edit-profile-form"
+          hx-put="/user/edit"
+          hx-target="#user-profile"
+          hx-swap="innerHTML"
+        >
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" /><br /><br />
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" /><br /><br />
+          <button type="submit">Update Profile</button>
+        </form>
+      </div>
+
+      <div id="change-password" style="display: none">
+        <h2>Change Password</h2>
+        <form
+          id="change-password-form"
+          hx-put="/user/change-password"
+          hx-target="#user-profile"
+          hx-swap="innerHTML"
+        >
+          <label for="current-password">Current Password:</label>
+          <input
+            type="password"
+            id="current-password"
+            name="current-password"
+          /><br /><br />
+          <label for="new-password">New Password:</label>
+          <input
+            type="password"
+            id="new-password"
+            name="new-password"
+          /><br /><br />
+          <label for="confirm-password">Confirm Password:</label>
+          <input
+            type="password"
+            id="confirm-password"
+            name="confirm-password"
+          /><br /><br />
+          <button type="submit">Change Password</button>
+        </form>
+      </div>
+
+      <div class="menu">
+        <a href="/html/legal/faqs.html">FAQs</a>
+        <a href="https://forms.gle/feedbackFormLink">Feedback</a>
+        <a href="/html/legal/contactus.html">Contact Us</a>
+        <a href="/html/legal/termsofuse.html">Terms of Use</a>
+        <a href="/html/legal/privacypolicy.html">Privacy Policy</a>
+        <a href="https://forms.gle/jv5Dn4ALpJUfpc4W9" class="submit-new-stall">
+          Submit New Stall
+        </a>
+      </div>
+    </main>
+
+    <footer>
+      <div id="footer" data-include-html="../footer.html"></div>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (user && user.accessToken) {
+          fetch("http://127.0.0.1:5001/api/user/profile", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${user.accessToken}`,
+              "x-refresh-token": user.refreshToken,
+            },
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data && data.name && data.email) {
+                document.getElementById("user-name").textContent = data.name;
+                document.getElementById("user-email").textContent = data.email;
+                if (data.profilePictureUrl) {
+                  document.getElementById(
+                    "profile-picture"
+                  ).src = `http://127.0.0.1:5001/api${data.profilePictureUrl}`;
+                }
+              } else {
+                console.error("Invalid user data:", data);
+                document.getElementById("user-profile").innerHTML =
+                  "<p>Error loading profile information.</p>";
+              }
+            })
+            .catch((error) => {
+              console.error("Error fetching profile information:", error);
+              document.getElementById("user-profile").innerHTML =
+                "<p>Error loading profile information.</p>";
+            });
+        }
+        function updateNavbar() {
+          const navbarContainer = document.getElementById("navbar");
+          if (navbarContainer) {
+            const navUserNavContainer = navbarContainer.querySelector(
+              "#user-nav-container"
+            );
+            if (navUserNavContainer) {
+              let userNavContent = '<ul class="nav-items">';
+
+              if (user && user.accessToken) {
+                userNavContent += `
+    <li><a href="../../html/user/user.html">User Profile</a></li>
+    <li><a href="#" id="logout-link">Logout</a></li>
+  `;
+
+                if (user.role === "superAdmin") {
+                  console.log("User is superAdmin");
+                  userNavContent += `
+      <li><a href="../../html/administration/admin.html">Admin</a></li>
+    `;
+                }
+              } else {
+                userNavContent += `
+    <li><a href="../../html/auth/login.html">Login</a></li>
+    <li><a href="../../html/auth/register.html">Register</a></li>
+  `;
+              }
+
+              userNavContent += "</ul>";
+              navUserNavContainer.innerHTML = userNavContent;
+              console.log("userNavContent added to navbar:", userNavContent);
+
+              const logoutLink =
+                navUserNavContainer.querySelector("#logout-link");
+              if (logoutLink) {
+                logoutLink.addEventListener("click", () => {
+                  console.log("Logout link clicked");
+                  localStorage.removeItem("user");
+                  window.location.href = "../../html/auth/login.html";
+                });
+              }
+            }
+          }
+        }
+
+        // Wait for the includeHTML to finish loading the navbar
+        const observer = new MutationObserver(() => {
+          if (document.getElementById("navbar").innerHTML.trim() !== "") {
+            updateNavbar();
+            observer.disconnect();
+          }
+        });
+        observer.observe(document.getElementById("navbar"), {
+          childList: true,
+        });
+      });
+
+      function toggleEditProfile() {
+        const editProfile = document.getElementById("edit-profile");
+        editProfile.style.display =
+          editProfile.style.display === "none" ? "block" : "none";
+      }
+
+      function toggleChangePassword() {
+        const changePassword = document.getElementById("change-password");
+        changePassword.style.display =
+          changePassword.style.display === "none" ? "block" : "none";
+      }
+
+      function uploadProfilePicture(event) {
+        const file = event.target.files[0];
+        if (file) {
+          const formData = new FormData();
+          formData.append("profilePicture", file);
+
+          const user = JSON.parse(localStorage.getItem("user"));
+          fetch("http://127.0.0.1:5001/api/user/profile-picture", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${user.accessToken}`,
+              "x-refresh-token": user.refreshToken,
+            },
+            body: formData,
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              document.getElementById(
+                "profile-picture"
+              ).src = `http://127.0.0.1:5001${data.profilePictureUrl}`;
+            })
+            .catch((error) =>
+              console.error("Error uploading profile picture:", error)
+            );
+        }
+      }
+
+      function deleteProfilePicture() {
+        const user = JSON.parse(localStorage.getItem("user"));
+        fetch("http://127.0.0.1:5001/api/user/profile-picture", {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${user.accessToken}`,
+            "x-refresh-token": user.refreshToken,
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            document.getElementById("profile-picture").src =
+              "profile-picture.png";
+          })
+          .catch((error) =>
+            console.error("Error deleting profile picture:", error)
+          );
+      }
+    </script>
+  </body>
+</html>

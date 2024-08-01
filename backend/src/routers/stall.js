@@ -5,13 +5,22 @@ const {
   getAllStalls,
   updateStall,
   deleteStall,
+  getStallById,
+  searchStalls,
+  findNearbyStalls,
 } = require("../controllers/stall");
 const auth = require("../middleware/auth");
 const adminAuth = require("../middleware/adminAuth");
 
-router.post("/", auth, adminAuth, createStall);
+const setCORPHeader = require("../middleware/setCORPHeader");
+const { uploadMultiple } = require("../../services/gridfsStorage");
+
 router.get("/", auth, getAllStalls);
-router.put("/:id", auth, adminAuth, updateStall);
-router.delete("/:id", auth, adminAuth, deleteStall);
+router.get("/search", auth, searchStalls);
+router.get("/nearby", auth, findNearbyStalls);
+router.get("/:id", auth, setCORPHeader, getStallById);
+router.post("/create", adminAuth, uploadMultiple, createStall);
+router.put("/:id", adminAuth, uploadMultiple, updateStall);
+router.delete("/:id", adminAuth, deleteStall);
 
 module.exports = router;

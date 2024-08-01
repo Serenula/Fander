@@ -1,9 +1,13 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
+const {
+  uploadProfilePicture,
+  deleteProfilePicture,
+} = require("../../services/fileHandler");
 
 const getUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId).select("-password");
+    const user = await User.findById(req.user._id).select("-password");
     res.json(user);
   } catch (error) {
     console.error(error);
@@ -16,7 +20,7 @@ const updateUserProfile = async (req, res) => {
 
   try {
     const updatedUser = await User.findByIdAndUpdate(
-      req.user.userId,
+      req.user._id,
       { name, email },
       { new: true }
     ).select("-password");
@@ -29,14 +33,21 @@ const updateUserProfile = async (req, res) => {
 };
 
 const changePassword = async (req, res) => {
-  const { oldPassword, newPassword } = req.body;
+  const { currentPassword, newPassword, confirmPassword } = req.body;
 
   try {
-    const user = await User.findById(req.user.userId);
-    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
 
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid current password" });
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ msg: "Passwords do not match" });
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -52,7 +63,7 @@ const changePassword = async (req, res) => {
 
 const deactivateUserAccount = async (req, res) => {
   try {
-    await User.findByIdAndUpdate(req.user.userId, { active: false });
+    await User.findByIdAndUpdate(req.user._id, { active: false });
     res.json({ message: "Account deactivated" });
   } catch (error) {
     console.error(error);
@@ -62,7 +73,7 @@ const deactivateUserAccount = async (req, res) => {
 
 const reactivateUserAccount = async (req, res) => {
   try {
-    await User.findByIdAndUpdate(req.user.userId, { active: true });
+    await User.findByIdAndUpdate(req.user._id, { active: true });
     res.json({ message: "Account reactivated" });
   } catch (error) {
     console.error(error);
@@ -76,4 +87,6 @@ module.exports = {
   changePassword,
   deactivateUserAccount,
   reactivateUserAccount,
+  uploadProfilePicture,
+  deleteProfilePicture,
 };

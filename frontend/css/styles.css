@@ -1,0 +1,107 @@
+/* Reset styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Basic styling */
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  padding: 20px;
+}
+
+/* Navigation Bar */
+nav {
+  background-color: #333;
+  overflow: hidden;
+  padding: 0 20px;
+  width: 100vw; /* Ensure full viewport width */
+  position: absolute;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  top: 0px;
+}
+
+nav ul,
+.nav-items {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Ensures space between items */
+}
+
+nav ul li,
+.nav-items li {
+  margin-right: 20px;
+}
+
+nav ul li a,
+nav ul li button {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+nav ul li a:hover,
+nav ul li button:hover {
+  background-color: #111;
+}
+
+.nav-logo {
+  height: 60px;
+  margin-right: 20px;
+  margin-left: -40px;
+}
+
+nav ul li button,
+.nav-items li button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-size: 16px;
+  padding: 14px 16px;
+}
+
+.user-nav {
+  display: flex;
+  align-items: center;
+}
+
+.user-nav li {
+  margin-right: 20px;
+}
+
+/* Adjusted styles for consistent spacing */
+nav ul {
+  display: flex;
+  align-items: center;
+  justify-content: space-around; /* Ensure equal spacing between all items */
+}
+
+nav ul li {
+  margin: 0 10px; /* Equal spacing around each item */
+}
+
+/* Footer Styling */
+footer {
+  background-color: #f4f4f4;
+  padding: 20px;
+  text-align: center;
+  border-top: 1px solid #ddd;
+  width: 100%;
+  box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);
+  position: absolute;
+}
+
+footer p {
+  margin: 0;
+}
