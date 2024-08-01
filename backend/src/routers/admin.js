@@ -16,6 +16,6 @@ router.get("/users/:id", adminAuth, getUserById);
 router.put("/users/:id", adminAuth, updateUserById);
 router.delete("/users/:id", adminAuth, deleteUserById);
 router.put("/users/:id/role", superAdminAuth, changeUserRole);
-router.post("/", superAdminAuth, createAdmin);
+router.post("/createAdmin", superAdminAuth, createAdmin);
 
 module.exports = router;

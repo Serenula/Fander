@@ -5,15 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>User Profile</title>
     <link rel="stylesheet" href="../../css/user.css" />
-    <link rel="stylesheet" href="/frontend/css/styles.css" />
+    <link rel="stylesheet" href="../../css/styles.css" />
     <script src="../../js/config.js"></script>
     <script src="../../node_modules/htmx.org/dist/htmx.js"></script>
     <script src="../../js/adminCheck.js"></script>
     <script src="../../js/include.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.accessToken) {
+          window.location.href = "../../html/auth/login.html";
+        }
+      });
+    </script>
   </head>
-  <body onload="includeHTML()">
+  <body>
     <header>
-      <div id="navbar" data-include-html="/html/navbar.html"></div>
+      <div id="navbar" data-include-html="../navbar.html"></div>
     </header>
 
     <main>
@@ -109,7 +117,7 @@
     </main>
 
     <footer>
-      <div id="footer" data-include-html="/html/footer.html"></div>
+      <div id="footer" data-include-html="../footer.html"></div>
     </footer>
 
     <script>
@@ -146,6 +154,61 @@
                 "<p>Error loading profile information.</p>";
             });
         }
+        function updateNavbar() {
+          const navbarContainer = document.getElementById("navbar");
+          if (navbarContainer) {
+            const navUserNavContainer = navbarContainer.querySelector(
+              "#user-nav-container"
+            );
+            if (navUserNavContainer) {
+              let userNavContent = '<ul class="nav-items">';
+
+              if (user && user.accessToken) {
+                userNavContent += `
+    <li><a href="../../html/user/user.html">User Profile</a></li>
+    <li><a href="#" id="logout-link">Logout</a></li>
+  `;
+
+                if (user.role === "superAdmin") {
+                  console.log("User is superAdmin");
+                  userNavContent += `
+      <li><a href="../../html/administration/admin.html">Admin</a></li>
+    `;
+                }
+              } else {
+                userNavContent += `
+    <li><a href="../../html/auth/login.html">Login</a></li>
+    <li><a href="../../html/auth/register.html">Register</a></li>
+  `;
+              }
+
+              userNavContent += "</ul>";
+              navUserNavContainer.innerHTML = userNavContent;
+              console.log("userNavContent added to navbar:", userNavContent);
+
+              const logoutLink =
+                navUserNavContainer.querySelector("#logout-link");
+              if (logoutLink) {
+                logoutLink.addEventListener("click", () => {
+                  console.log("Logout link clicked");
+                  localStorage.removeItem("user");
+                  window.location.href = "../../html/auth/login.html";
+                });
+              }
+            }
+          }
+        }
+
+        // Wait for the includeHTML to finish loading the navbar
+        const observer = new MutationObserver(() => {
+          if (document.getElementById("navbar").innerHTML.trim() !== "") {
+            updateNavbar();
+            observer.disconnect();
+          }
+        });
+        observer.observe(document.getElementById("navbar"), {
+          childList: true,
+        });
       });
 
       function toggleEditProfile() {

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Create Stall</title>
+    <title>Admin Page</title>
     <link rel="stylesheet" href="../../css/styles.css" />
     <link rel="stylesheet" href="../../css/admin.css" />
     <script src="../../js/config.js"></script>
@@ -11,46 +11,34 @@
     <script src="../../js/adminCheck.js"></script>
     <script src="../../js/include.js"></script>
     <script>
-      // Fetch the Google Maps API key from the server
-      let apiKey = "";
-
-      fetch("http://127.0.0.1:5001/api/maps/apikey")
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.apiKey) {
-            apiKey = data.apiKey;
-          } else {
-            console.error("Failed to load Google Maps API Key");
-          }
-        })
-        .catch((error) => console.error("Error fetching API key:", error));
-
-      function fetchGeocode(address) {
-        return fetch(
-          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-            address
-          )}&key=${apiKey}`
-        )
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.status === "OK") {
-              return data.results[0].geometry.location;
-            } else {
-              throw new Error(data.status);
-            }
-          });
-      }
+      document.addEventListener("DOMContentLoaded", () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (
+          !user ||
+          !user.accessToken ||
+          (user.role !== "admin" && user.role !== "superAdmin")
+        ) {
+          window.location.href = "../../html/auth/login.html";
+        }
+      });
     </script>
   </head>
-  <body onload="includeHTML()">
+  <body class="admin-page">
     <header>
-      <div id="navbar" data-include-html="/html/navbar.html"></div>
+      <div id="navbar" data-include-html="../navbar.html"></div>
     </header>
 
     <main>
-      <h1>Create Stall</h1>
-      <div id="create-stall">
-        <form id="create-stall-form" onsubmit="createStall(event)">
+      <h1>Admin Page</h1>
+
+      <button onclick="toggleForm('create-stall-form')">Create Stall</button>
+      <button onclick="toggleForm('create-admin-form')">Create Admin</button>
+      <button onclick="toggleForm('delete-user-form')">Delete User</button>
+      <button onclick="toggleForm('delete-stall-form')">Delete Stall</button>
+
+      <div id="create-stall-form" class="admin-form" style="display: none">
+        <h2>Create Stall</h2>
+        <form id="create-stall" onsubmit="createStall(event)">
           <label for="name">Name:</label>
           <input type="text" id="name" name="name" required /><br /><br />
 
@@ -83,13 +71,66 @@
           <button type="submit">Create Stall</button>
         </form>
       </div>
+
+      <div id="create-admin-form" class="admin-form" style="display: none">
+        <h2>Create Admin</h2>
+        <form id="create-admin" onsubmit="createAdmin(event)">
+          <label for="admin-email">Admin Email:</label>
+          <input
+            type="email"
+            id="admin-email"
+            name="admin-email"
+            required
+          /><br /><br />
+
+          <button type="submit">Create Admin</button>
+        </form>
+      </div>
+
+      <div id="delete-user-form" class="admin-form" style="display: none">
+        <h2>Delete User</h2>
+        <div id="user-list"></div>
+      </div>
+
+      <div id="delete-stall-form" class="admin-form" style="display: none">
+        <h2>Delete Stall</h2>
+        <div id="stall-list"></div>
+      </div>
     </main>
 
     <footer>
-      <div id="footer" data-include-html="/html/footer.html"></div>
+      <div id="footer" data-include-html="../footer.html"></div>
     </footer>
 
     <script>
+      function toggleForm(formId) {
+        const forms = document.querySelectorAll(".admin-form");
+        forms.forEach((form) => (form.style.display = "none"));
+        const form = document.getElementById(formId);
+        if (form) {
+          form.style.display = "block";
+          if (formId === "delete-user-form") {
+            fetchUsers();
+          } else if (formId === "delete-stall-form") {
+            fetchStalls();
+          }
+        }
+      }
+
+      // Fetch the Google Maps API key from the server
+      let apiKey = "";
+
+      fetch("http://127.0.0.1:5001/api/maps/apikey")
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.apiKey) {
+            apiKey = data.apiKey;
+          } else {
+            console.error("Failed to load Google Maps API Key");
+          }
+        })
+        .catch((error) => console.error("Error fetching API key:", error));
+
       function fetchGeocode(address) {
         return fetch(
           `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
@@ -138,6 +179,174 @@
           })
           .catch((error) => console.error("Error fetching geocode:", error));
       }
+
+      function createAdmin(event) {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+        const data = {};
+        formData.forEach((value, key) => (data[key] = value));
+
+        fetch("http://127.0.0.1:5001/api/admins/createAdmin", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.accessToken}`,
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => response.json())
+          .then(() => {
+            alert("Admin created successfully!");
+          })
+          .catch((error) => console.error("Error creating admin:", error));
+      }
+
+      function fetchUsers() {
+        const user = JSON.parse(localStorage.getItem("user"));
+        fetch("http://127.0.0.1:5001/api/admins/users", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.accessToken}`,
+          },
+        })
+          .then((response) => response.json())
+          .then((users) => {
+            const userList = document.getElementById("user-list");
+            userList.innerHTML = users
+              .map(
+                (user) => `
+              <div class="user-item">
+                <span>${user.name} (${user.email})</span>
+                <button onclick="deleteUser('${user._id}')">Delete</button>
+              </div>
+            `
+              )
+              .join("");
+          })
+          .catch((error) => console.error("Error fetching users:", error));
+      }
+
+      function fetchStalls() {
+        const user = JSON.parse(localStorage.getItem("user"));
+        fetch("http://127.0.0.1:5001/api/stalls", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.accessToken}`,
+          },
+        })
+          .then((response) => response.json())
+          .then((stalls) => {
+            const stallList = document.getElementById("stall-list");
+            stallList.innerHTML = stalls
+              .map(
+                (stall) => `
+              <div class="stall-item">
+                <span>${stall.name} (${stall.address})</span>
+                <button onclick="deleteStall('${stall._id}')">Delete</button>
+              </div>
+            `
+              )
+              .join("");
+          })
+          .catch((error) => console.error("Error fetching stalls:", error));
+      }
+
+      function deleteUser(userId) {
+        const user = JSON.parse(localStorage.getItem("user"));
+        fetch(`http://127.0.0.1:5001/api/admins/users/${userId}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.accessToken}`,
+          },
+        })
+          .then((response) => response.json())
+          .then(() => {
+            alert("User deleted successfully!");
+            fetchUsers();
+          })
+          .catch((error) => console.error("Error deleting user:", error));
+      }
+
+      function deleteStall(stallId) {
+        const user = JSON.parse(localStorage.getItem("user"));
+        fetch(`http://127.0.0.1:5001/api/stalls/${stallId}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.accessToken}`,
+          },
+        })
+          .then((response) => response.json())
+          .then(() => {
+            alert("Stall deleted successfully!");
+            fetchStalls();
+          })
+          .catch((error) => console.error("Error deleting stall:", error));
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        function updateNavbar() {
+          const navbarContainer = document.getElementById("navbar");
+          if (navbarContainer) {
+            const navUserNavContainer = navbarContainer.querySelector(
+              "#user-nav-container"
+            );
+            if (navUserNavContainer) {
+              let userNavContent = '<ul class="nav-items">';
+
+              if (user && user.accessToken) {
+                userNavContent += `
+                <li><a href="../../html/user/user.html">User Profile</a></li>
+                <li><a href="#" id="logout-link">Logout</a></li>
+              `;
+
+                if (user.role === "superAdmin") {
+                  console.log("User is superAdmin");
+                  userNavContent += `
+                  <li><a href="../../html/administration/admin.html">Admin</a></li>
+                `;
+                }
+              } else {
+                userNavContent += `
+                <li><a href="../../html/auth/login.html">Login</a></li>
+                <li><a href="../../html/auth/register.html">Register</a></li>
+              `;
+              }
+
+              userNavContent += "</ul>";
+              navUserNavContainer.innerHTML = userNavContent;
+              console.log("userNavContent added to navbar:", userNavContent);
+
+              const logoutLink =
+                navUserNavContainer.querySelector("#logout-link");
+              if (logoutLink) {
+                logoutLink.addEventListener("click", () => {
+                  console.log("Logout link clicked");
+                  localStorage.removeItem("user");
+                  window.location.href = "../../html/auth/login.html";
+                });
+              }
+            }
+          }
+        }
+
+        // Wait for the includeHTML to finish loading the navbar
+        const observer = new MutationObserver(() => {
+          if (document.getElementById("navbar").innerHTML.trim() !== "") {
+            updateNavbar();
+            observer.disconnect();
+          }
+        });
+        observer.observe(document.getElementById("navbar"), {
+          childList: true,
+        });
+      });
     </script>
   </body>
 </html>

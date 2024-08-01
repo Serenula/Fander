@@ -1,25 +1,12 @@
 /* Namespace to avoid clashes */
 .admin-page {
   font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
+  background-color: #f9f9f9;
   padding: 20px;
   line-height: 1.6;
+  margin-top: 40px;
+  margin-bottom: 60px;
 }
-
-.admin-page header,
-.admin-page footer {
-  background-color: #333;
-  color: white;
-  padding: 10px 0;
-  text-align: center;
-}
-
-.admin-page header a,
-.admin-page footer a {
-  color: white;
-  text-decoration: none;
-}
-
 .admin-page main {
   max-width: 800px;
   margin: 0 auto;
@@ -54,7 +41,7 @@
 }
 
 .admin-page button {
-  background-color: #007bff;
+  background-color: #ff9b62;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -65,24 +52,41 @@
 }
 
 .admin-page button:hover {
-  background-color: #0056b3;
+  background-color: #e5834b;
 }
 
-/* Responsive Design */
-@media (max-width: 480px) {
-  .admin-page main {
-    padding: 10px;
-  }
+.user-item,
+.stall-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  white-space: nowrap; /* Prevent overflow */
+  overflow: hidden; /* Hide overflow */
+  text-overflow: ellipsis; /* Add ellipsis for overflow text */
 }
 
-@media (min-width: 481px) and (max-width: 768px) {
-  .admin-page main {
-    padding: 15px;
-  }
+.user-item span,
+.stall-item span {
+  flex-grow: 1;
+  margin-right: 10px;
 }
 
-@media (min-width: 769px) and (max-width: 1024px) {
-  .admin-page main {
-    padding: 20px;
-  }
+.user-item button,
+.stall-item button {
+  background-color: #ff9b62;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.user-item button:hover,
+.stall-item button:hover {
+  background-color: #e5834b;
 }

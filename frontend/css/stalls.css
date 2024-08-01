@@ -1,31 +1,13 @@
+/* stalls.css */
+
 body {
   font-family: Arial, sans-serif;
+  margin-top: 40px;
   margin-bottom: 60px;
 }
 
-h1 {
-  text-align: center;
-}
-
-#map {
-  height: 500px;
-  width: 100%;
-  margin-bottom: 20px;
-}
-
-#create-stall {
-  margin: 0 auto;
-  max-width: 600px;
-}
-
-label {
-  display: inline-block;
-  width: 100px;
-}
-
-input,
 button {
-  width: calc(100% - 120px);
+  width: calc(100% - 20px);
   padding: 10px;
   margin-bottom: 15px;
   border: 1px solid #ddd;
@@ -33,23 +15,24 @@ button {
   box-sizing: border-box;
 }
 
-button {
-  display: block;
-  margin: 20px auto;
-  padding: 10px 20px;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  cursor: pointer;
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
-button:hover {
-  background-color: #218838;
+.search-bar {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
 }
 
 .stall-grid {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 16px;
   padding: 16px;
   justify-content: center;
@@ -60,8 +43,36 @@ button:hover {
   border-radius: 4px;
   padding: 16px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.stall-card h3 {
-  margin-top: 0;
+.stall-card img {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.stall-details {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.stall-details p {
+  margin: 0;
+}
+
+button {
+  background-color: #ff9b62;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #e5834b;
 }

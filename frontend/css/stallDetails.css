@@ -1,6 +1,7 @@
 body {
   font-family: Arial, sans-serif;
   margin-bottom: 60px;
+  background-color: #f9f9f9;
 }
 
 .container {
@@ -72,11 +73,15 @@ body {
 }
 
 .leave-review-btn {
-  background-color: lightblue;
+  background-color: #ff9b62;
   color: #000;
   border: none;
   padding: 10px 20px;
   cursor: pointer;
+}
+
+.leave-review-btn:hover {
+  background-color: #e5834b;
 }
 
 #review-form {
@@ -100,8 +105,12 @@ body {
 }
 
 #review-form button {
-  background-color: lightblue;
+  background-color: #ff9b62;
   border: none;
   padding: 10px 20px;
   cursor: pointer;
+}
+
+#review-form button:hover {
+  background-color: #e5834b; /* Secondary color */
 }

@@ -9,9 +9,17 @@
     <script src="../../js/config.js"></script>
     <script src="../../node_modules/htmx.org/dist/htmx.js"></script>
     <script src="../../js/include.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.accessToken) {
+          window.location.href = "../../html/auth/login.html";
+        }
+      });
+    </script>
   </head>
-  <body onload="includeHTML()" class="stall-details-page">
-    <div id="navbar" data-include-html="/html/navbar.html"></div>
+  <body class="stall-details-page">
+    <div id="navbar" data-include-html="../navbar.html"></div>
     <div class="container">
       <div id="stall-details">
         <!-- Stall details will be loaded here -->
@@ -58,7 +66,7 @@
         </div>
       </div>
     </div>
-    <div id="footer" data-include-html="/html/footer.html"></div>
+
     <script>
       function toggleReviewForm() {
         const reviewForm = document.getElementById("review-form");
@@ -79,6 +87,64 @@
         } else {
           console.error("No stall ID found in URL parameters");
         }
+        // Update the navbar with user info
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        function updateNavbar() {
+          const navbarContainer = document.getElementById("navbar");
+          if (navbarContainer) {
+            const navUserNavContainer = navbarContainer.querySelector(
+              "#user-nav-container"
+            );
+            if (navUserNavContainer) {
+              let userNavContent = '<ul class="nav-items">';
+
+              if (user && user.accessToken) {
+                userNavContent += `
+    <li><a href="../../html/user/user.html">User Profile</a></li>
+    <li><a href="#" id="logout-link">Logout</a></li>
+  `;
+
+                if (user.role === "superAdmin") {
+                  console.log("User is superAdmin");
+                  userNavContent += `
+      <li><a href="../../html/administration/admin.html">Admin</a></li>
+    `;
+                }
+              } else {
+                userNavContent += `
+    <li><a href="../../html/auth/login.html">Login</a></li>
+    <li><a href="../../html/auth/register.html">Register</a></li>
+  `;
+              }
+
+              userNavContent += "</ul>";
+              navUserNavContainer.innerHTML = userNavContent;
+              console.log("userNavContent added to navbar:", userNavContent);
+
+              const logoutLink =
+                navUserNavContainer.querySelector("#logout-link");
+              if (logoutLink) {
+                logoutLink.addEventListener("click", () => {
+                  console.log("Logout link clicked");
+                  localStorage.removeItem("user");
+                  window.location.href = "../../html/auth/login.html";
+                });
+              }
+            }
+          }
+        }
+
+        // Wait for the includeHTML to finish loading the navbar
+        const observer = new MutationObserver(() => {
+          if (document.getElementById("navbar").innerHTML.trim() !== "") {
+            updateNavbar();
+            observer.disconnect();
+          }
+        });
+        observer.observe(document.getElementById("navbar"), {
+          childList: true,
+        });
       });
 
       function fetchStallDetails(stallId) {
@@ -320,5 +386,8 @@
           .catch((error) => console.error("Error submitting review:", error));
       }
     </script>
+    <footer>
+      <div id="footer" data-include-html="../footer.html"></div>
+    </footer>
   </body>
 </html>

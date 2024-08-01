@@ -1,6 +1,7 @@
 body {
   font-family: Arial, sans-serif;
   margin-bottom: 60px;
+  background-color: #f9f9f9;
 }
 
 .profile-container {
@@ -31,7 +32,7 @@ button {
   margin: 10px auto;
   border: 1px solid #ddd;
   border-radius: 4px;
-  background-color: #28a745;
+  background-color: #ff9b62;
   color: white;
   cursor: pointer;
   text-align: center;
@@ -42,7 +43,7 @@ button {
 .upload-button:hover,
 .delete-button:hover,
 button:hover {
-  background-color: #218838;
+  background-color: #e5834b;
 }
 
 .menu {
@@ -102,14 +103,14 @@ button {
 }
 
 button {
-  background-color: #28a745;
+  background-color: #ff9b62;
   color: white;
   border: none;
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #218838;
+  background-color: #e5834b;
 }
 
 form {

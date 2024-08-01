@@ -4,77 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Navbar</title>
-    <link rel="stylesheet" href="/frontend/css/styles.css" />
-    <script src="../js/adminCheck.js"></script>
-    <script src="../node_modules/htmx.org/dist/htmx.js"></script>
-    <script src="../js/config.js"></script>
+    <link rel="stylesheet" href="css/styles.css" />
+    <script src="js/adminCheck.js"></script>
+    <script src="node_modules/htmx.org/dist/htmx.js"></script>
+    <script src="js/config.js"></script>
   </head>
   <body>
     <!-- Navbar -->
     <nav>
       <ul>
         <li>
-          <img src="../Image/Fander.png" alt="Logo" class="nav-logo" />
+          <img src="image/Fander_Logo.png" alt="Logo" class="nav-logo" />
         </li>
-        <li><button id="back-button">Back</button></li>
-        <li><a href="/html/stalls/stalls.html">Stalls</a></li>
+        <li><button id="back-button" onclick="history.back()">Back</button></li>
+        <li><a href="html/stalls/stalls.html">Stalls</a></li>
         <li id="user-nav-container"></li>
       </ul>
     </nav>
-
-    <!-- Navbar Script -->
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        console.log("DOM Content Loaded");
-
-        const user = JSON.parse(localStorage.getItem("user"));
-        console.log("User object from localStorage:", user);
-
-        let userNavContent = "";
-
-        if (user && user.accessToken) {
-          userNavContent += `
-          <li><a href="/html/user/user.html">User Profile</a></li>
-          <li><a href="#" id="logout-link">Logout</a></li>
-        `;
-
-          if (user.role === "superAdmin") {
-            console.log("User is superAdmin");
-            userNavContent += `
-            <li><a href="/html/administration/admin.html">Admin</a></li>
-          `;
-          }
-        } else {
-          userNavContent += `
-          <li><a href="/html/auth/login.html">Login</a></li>
-          <li><a href="/html/auth/register.html">Register</a></li>
-        `;
-        }
-
-        const userNavContainer = document.getElementById("user-nav-container");
-        userNavContainer.innerHTML = userNavContent;
-        console.log("userNavContent added:", userNavContent);
-        console.log(
-          "user-nav-container innerHTML:",
-          userNavContainer.innerHTML
-        );
-
-        // Event listeners
-        document.getElementById("back-button").addEventListener("click", () => {
-          history.back();
-        });
-
-        const logoutLink = document.getElementById("logout-link");
-        if (logoutLink) {
-          logoutLink.addEventListener("click", () => {
-            console.log("Logout link clicked");
-            localStorage.removeItem("user");
-            window.location.href = "/html/auth/login.html";
-          });
-        } else {
-          console.error("Logout link element not found");
-        }
-      });
-    </script>
   </body>
 </html>

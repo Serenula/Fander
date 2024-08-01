@@ -4,9 +4,79 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Privacy Policy</title>
+    <link rel="stylesheet" href="../../css/styles.css" />
     <script src="../../js/include.js"></script>
   </head>
-  <body onload="includeHTML()">
-    <div id="navbar" data-include-html="/html/navbar.html"></div>
+  <body>
+    <div id="navbar" data-include-html="../navbar.html"></div>
+    <div class="content">
+      <h1>Privacy Policy</h1>
+      <p>This is the privacy policy page.</p>
+    </div>
+
+    <footer>
+      <div id="footer" data-include-html="../footer.html"></div>
+    </footer>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        function updateNavbar() {
+          const navbarContainer = document.getElementById("navbar");
+          if (navbarContainer) {
+            const navUserNavContainer = navbarContainer.querySelector(
+              "#user-nav-container"
+            );
+            if (navUserNavContainer) {
+              let userNavContent = '<ul class="nav-items">';
+
+              if (user && user.accessToken) {
+                userNavContent += `
+    <li><a href="../../html/user/user.html">User Profile</a></li>
+    <li><a href="#" id="logout-link">Logout</a></li>
+  `;
+
+                if (user.role === "superAdmin") {
+                  console.log("User is superAdmin");
+                  userNavContent += `
+      <li><a href="../../html/administration/admin.html">Admin</a></li>
+    `;
+                }
+              } else {
+                userNavContent += `
+    <li><a href="../../html/auth/login.html">Login</a></li>
+    <li><a href="../../html/auth/register.html">Register</a></li>
+  `;
+              }
+
+              userNavContent += "</ul>";
+              navUserNavContainer.innerHTML = userNavContent;
+              console.log("userNavContent added to navbar:", userNavContent);
+
+              const logoutLink =
+                navUserNavContainer.querySelector("#logout-link");
+              if (logoutLink) {
+                logoutLink.addEventListener("click", () => {
+                  console.log("Logout link clicked");
+                  localStorage.removeItem("user");
+                  window.location.href = "../../html/auth/login.html";
+                });
+              }
+            }
+          }
+        }
+
+        // Wait for the includeHTML to finish loading the navbar
+        const observer = new MutationObserver(() => {
+          if (document.getElementById("navbar").innerHTML.trim() !== "") {
+            updateNavbar();
+            observer.disconnect();
+          }
+        });
+        observer.observe(document.getElementById("navbar"), {
+          childList: true,
+        });
+      });
+    </script>
   </body>
 </html>
