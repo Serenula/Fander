@@ -60,10 +60,10 @@
 - Multer, GridFs and Mongoose for image storing and retrival with MongoDB
 
 **.env**
-DATABASE: MongoDB URL
-GOOGLE_MAPS_API_KEY: Google maps api key
-ACCESS TOKEN
-REFRESH TOKEN
+- DATABASE: MongoDB URL
+- GOOGLE_MAPS_API_KEY: Google maps api key
+- ACCESS TOKEN
+- REFRESH TOKEN
 
 **Frontend setup**
 
