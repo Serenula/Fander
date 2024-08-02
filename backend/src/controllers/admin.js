@@ -1,5 +1,6 @@
 const Stall = require("../models/Stall");
 const User = require("../models/User");
+const bcrypt = require("bcrypt");
 
 // Get all users
 const getAllUsers = async (req, res) => {
