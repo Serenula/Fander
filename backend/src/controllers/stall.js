@@ -71,10 +71,36 @@ const getAllStalls = async (req, res) => {
         },
       },
     ]);
-    res.json(stalls);
+
+    // Generate HTML for each stall
+    const htmlResponse = stalls
+      .map(
+        (stall) => `
+      <div class="stall-card" onclick="viewStallDetails('${stall._id}')">
+        <img src="${
+          stall.images && stall.images.length > 0
+            ? `http://127.0.0.1:5001/api${stall.images[0]}`
+            : "/path/to/default/image.jpg"
+        }" alt="${stall.name}" class="stall-image" />
+        <div class="stall-details">
+          <p><strong>Name:</strong> ${stall.name}</p>
+          <p><strong>Address:</strong> ${stall.address}</p>
+          <p><strong>Operating Hours:</strong> ${stall.hours}</p>
+          <p><strong>Average Rating:</strong> ${
+            stall.averageRating
+              ? stall.averageRating.toFixed(1)
+              : "No ratings yet"
+          }</p>
+        </div>
+      </div>
+    `
+      )
+      .join("");
+
+    res.send(htmlResponse); // Send HTML response
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).send(`<p>Server error: ${error.message}</p>`);
   }
 };
 
@@ -126,15 +152,37 @@ const deleteStall = async (req, res) => {
 
 const getStallById = async (req, res) => {
   try {
-    const getStall = await Stall.findById(req.params.id);
+    const stall = await Stall.findById(req.params.id);
 
-    if (!getStall) {
-      return res.status(404).json({ message: "Stall not found" });
+    if (!stall) {
+      return res.status(404).send(`<p>Stall not found</p>`);
     }
-    res.json(getStall);
+
+    // Generate HTML for the specific stall
+    const htmlResponse = `
+      <div class="stall-card">
+        <img src="${
+          stall.images && stall.images.length > 0
+            ? `http://127.0.0.1:5001/api${stall.images[0]}`
+            : "/path/to/default/image.jpg"
+        }" alt="${stall.name}" class="stall-image" />
+        <div class="stall-details">
+          <p><strong>Name:</strong> ${stall.name}</p>
+          <p><strong>Address:</strong> ${stall.address}</p>
+          <p><strong>Operating Hours:</strong> ${stall.hours}</p>
+          <p><strong>Average Rating:</strong> ${
+            stall.averageRating
+              ? stall.averageRating.toFixed(1)
+              : "No ratings yet"
+          }</p>
+        </div>
+      </div>
+    `;
+
+    res.send(htmlResponse); // Send HTML response
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).send(`<p>Server error: ${error.message}</p>`);
   }
 };
 
@@ -148,9 +196,36 @@ const searchStalls = async (req, res) => {
         { hours: { $regex: query, $options: "i" } },
       ],
     });
-    res.json(stalls);
+
+    // Generate HTML for search results
+    const htmlResponse = stalls
+      .map(
+        (stall) => `
+      <div class="stall-card" onclick="viewStallDetails('${stall._id}')">
+        <img src="${
+          stall.images && stall.images.length > 0
+            ? `http://127.0.0.1:5001/api${stall.images[0]}`
+            : "/path/to/default/image.jpg"
+        }" alt="${stall.name}" class="stall-image" />
+        <div class="stall-details">
+          <p><strong>Name:</strong> ${stall.name}</p>
+          <p><strong>Address:</strong> ${stall.address}</p>
+          <p><strong>Operating Hours:</strong> ${stall.hours}</p>
+          <p><strong>Average Rating:</strong> ${
+            stall.averageRating
+              ? stall.averageRating.toFixed(1)
+              : "No ratings yet"
+          }</p>
+        </div>
+      </div>
+    `
+      )
+      .join("");
+
+    res.send(htmlResponse); // Send HTML response
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    console.error(error);
+    res.status(500).send(`<p>Server error: ${error.message}</p>`);
   }
 };
 
@@ -160,13 +235,13 @@ const findNearbyStalls = async (req, res) => {
   if (!lat || !lng || !distance) {
     return res
       .status(400)
-      .json({ message: "Latitude, longitude, and distance are required" });
+      .send(`<p>Latitude, longitude, and distance are required</p>`);
   }
 
   const parsedDistance = parseFloat(distance);
 
   if (isNaN(parsedDistance)) {
-    return res.status(400).json({ message: "Invalid distance parameter" });
+    return res.status(400).send(`<p>Invalid distance parameter</p>`);
   }
 
   try {
@@ -175,16 +250,41 @@ const findNearbyStalls = async (req, res) => {
         $geoWithin: {
           $centerSphere: [
             [parseFloat(lng), parseFloat(lat)],
-            parsedDistance / 6378.1, // this is the radius of Earth in km
+            parsedDistance / 6378.1, // radius of Earth in km
           ],
         },
       },
     });
 
-    res.json(stalls);
+    // Generate HTML for nearby stalls
+    const htmlResponse = stalls
+      .map(
+        (stall) => `
+      <div class="stall-card" onclick="viewStallDetails('${stall._id}')">
+        <img src="${
+          stall.images && stall.images.length > 0
+            ? `http://127.0.0.1:5001/api${stall.images[0]}`
+            : "/path/to/default/image.jpg"
+        }" alt="${stall.name}" class="stall-image" />
+        <div class="stall-details">
+          <p><strong>Name:</strong> ${stall.name}</p>
+          <p><strong>Address:</strong> ${stall.address}</p>
+          <p><strong>Operating Hours:</strong> ${stall.hours}</p>
+          <p><strong>Average Rating:</strong> ${
+            stall.averageRating
+              ? stall.averageRating.toFixed(1)
+              : "No ratings yet"
+          }</p>
+        </div>
+      </div>
+    `
+      )
+      .join("");
+
+    res.send(htmlResponse); // Send HTML response
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).send(`<p>Server error: ${error.message}</p>`);
   }
 };
 

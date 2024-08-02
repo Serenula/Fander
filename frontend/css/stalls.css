@@ -4,21 +4,34 @@ body {
   font-family: Arial, sans-serif;
   margin-top: 40px;
   margin-bottom: 60px;
+  line-height: 1.6;
+  background-color: #f9f9f9;
 }
 
 button {
   width: calc(100% - 20px);
   padding: 10px;
   margin-bottom: 15px;
-  border: 1px solid #ddd;
   border-radius: 4px;
   box-sizing: border-box;
+  background-color: #ff9b62;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #e5834b;
 }
 
 .container {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
 }
 
 .search-bar {
@@ -32,9 +45,9 @@ button {
 
 .stall-grid {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: 16px;
-  padding: 16px;
   justify-content: center;
 }
 
@@ -47,6 +60,14 @@ button {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  flex: 1 1 calc(33.333% - 32px);
+  max-width: calc(33.333% - 32px);
+  min-width: 250px;
+  transition: transform 0.3s;
+}
+
+.stall-card:hover {
+  transform: scale(1.05);
 }
 
 .stall-card img {
@@ -54,6 +75,7 @@ button {
   max-height: 200px;
   object-fit: cover;
   margin-bottom: 10px;
+  border-radius: 4px;
 }
 
 .stall-details {
@@ -64,15 +86,19 @@ button {
 
 .stall-details p {
   margin: 0;
+  color: #555;
 }
 
-button {
-  background-color: #ff9b62;
-  color: white;
-  border: none;
-  cursor: pointer;
+@media screen and (max-width: 768px) {
+  .stall-card {
+    flex: 1 1 calc(50% - 32px);
+    max-width: calc(50% - 32px);
+  }
 }
 
-button:hover {
-  background-color: #e5834b;
+@media screen and (max-width: 480px) {
+  .stall-card {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
 }
