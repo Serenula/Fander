@@ -1,6 +1,6 @@
 # Fander
 
-**Fander** is a web app that aims to catalogue Cai Fan/Png stalls island wide. The app allow users to discover, rate and reivew stalls and also, submit stalls to the app too! Find all the amazing cai fan near you using Fander today!
+**Fander** is a web app that aims to catalogue Cai Fan/Png stalls island wide. The app allow users to discover, rate and review stalls and also, submit stalls to the app too! Find all the amazing cai fan near you using Fander today!
 
 **Landing Page**
 ![Landing Page](/frontend/image/fander_landing.png)
